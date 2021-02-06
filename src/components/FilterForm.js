@@ -1,12 +1,78 @@
 import React, {useState} from 'react';
 import Checkboxes, {useCheckboxes} from './Checkboxes';
 import DisplayResults from './DisplayResults';
-import * as Constants from '../Constants'
+import * as Constants from '../Constants';
+import {theme} from './theme';
+
+import Button from '@material-ui/core/Button';
+import ClearIcon from '@material-ui/icons/Clear';
+import TextField from '@material-ui/core/TextField';
+import Container from '@material-ui/core/Container'; //Defines the size of page
+import Toolbar from '@material-ui/core/Toolbar'; 
+import AppBar from '@material-ui/core/AppBar'; 
+import Divider from '@material-ui/core/Divider';
+
+
+import {makeStyles, ThemeProvider, createMuiTheme} from '@material-ui/core/styles';
+import 'fontsource-roboto';
+
+import Typography from '@material-ui/core/Typography';
+
+import "./styles.css";
+
+// when you want to set up a style for a component
+//const useStyles = makeStyles((theme) => ({
+
+ const useStyles = makeStyles ((theme) => ({
+    button: {
+        background: 'linear-gradient(45deg, #285F80 29%, #333333 81% )',
+        border: 0,
+        borderRadius: 15,
+        color: '#FFFFFF', // white
+        padding: '5px 30px',
+        marginRight: '20px',
+    },
+    title: {
+        marginBottom: '10px',
+    },
+    toolbar: {
+        marginBottom: '1em',
+    },
+    
+
+}))
+
+// when you want to override a MUI default
+// const theme = createMuiTheme({
+//     typography: {
+//         h2: {
+//             fontSize:36,
+//             marginBottom:15,
+//         },
+//     },
+//     palette: {
+//         primary: {
+//             main: '#285F80', 
+//         },
+//         secondary: {
+//             main: '#d32f2f', 
+//         },
+
+//     },
+//     overrides: {
+//         MuiContainer: {
+//             root : {
+//               marginLeft: "10px",
+//             }
+//         }
+//     }
+// })
 
 
 export function FilterForm(props) {
     const [display, setDisplay] = useState(false);  // display the results of the search on the page
     const checkboxes = useCheckboxes();             // filter to determine which results to display
+    const classes = useStyles();
 
     // display the results on the page
     const handleSubmit = (event) => {
@@ -81,11 +147,11 @@ export function FilterForm(props) {
     const getData = (data) => {
         let results = data;
         const filters = checkboxes.checkboxes.filter((checks) => checks.checked === true).map((checkbox) => checkbox.name);
-
+        console.log("Filters->", filters);
         if (filters.includes("All")) 
             results = data;
 
-        if (filters.includes(Constants.FAILED)) 
+        if (filters.includes(Constants.FAILED) || filters.includes(Constants.MD5) || filters.includes(Constants.SHA256)) 
             results = getFailedData(data, filters);
       
         console.log("Results -->", results);
@@ -93,14 +159,55 @@ export function FilterForm(props) {
     }
 
     return(
-        <React.Fragment>
-            <form onSubmit={(e) => handleSubmit(e)}>
-                <p>Select the results to display:</p>
-                <Checkboxes {...checkboxes}/>
-                <input type="submit" name="search" value="search"></input>
-                <input type="submit" onClick={(e) => clearForm(e)} name="clear" value="clear" ></input>
-                {(display) ? <DisplayResults results={getData(props.data)}/> : null }
-            </form>
-        </React.Fragment>
+        <ThemeProvider theme={theme}>
+            <Container maxWidth="lg">
+                <React.Fragment>
+                    <form onSubmit={(e) => handleSubmit(e)}>
+                        <div className="App">
+                            <AppBar>
+                                <Toolbar className={classes.toolbar}>
+                                    <Typography
+                                        variant="h2"
+                                    >Check Tests Results
+                                    </Typography>
+                                </Toolbar>
+                            </AppBar>
+                        </div>
+                        <Checkboxes {...checkboxes}/>
+                        <Button 
+                            className={classes.button}
+                            variant="contained" 
+                            color="primary" 
+                            size="small"
+                            style={{
+                                fontSize:12
+                            }}
+                            onClick={handleSubmit}>
+                            Search
+                        </Button>
+                        <Button 
+                            className={classes.button}
+                            startIcon={<ClearIcon />}
+                            variant="contained" 
+                            color="primary" 
+                            size="small"
+                            style={{
+                                fontSize:12
+                            }}
+                            onClick={(e) => clearForm(e)}>
+                            Clear
+                        </Button>
+                        <TextField 
+                            variant="outlined"
+                            color="primary"
+                            label="Test Profile"
+                        />
+                        <Divider />
+                        {(display) ? <DisplayResults results={getData(props.data)}/> : null }
+                    </form>
+                </React.Fragment>
+            </Container>
+        </ThemeProvider>
+
     )
 }

@@ -157,8 +157,8 @@
               "duplicate": "pts/aircrack-ng-1.2.0 copied from http://download.aircrack-ng.org/aircrack-ng-1.5.2-win.zip",
               "url": "http://download.aircrack-ng.org/aircrack-ng-1.5.2-win.zip",
               "failures": {
-                "filesize": "16903422",
-                "sha256": "61a91b44918eb196f06f46a3dbc359ddeced5712095c814fabc473b25a1c2e44"
+                "fileSize": "16903422",
+                "SHA256": "61a91b44918eb196f06f46a3dbc359ddeced5712095c814fabc473b25a1c2e44"
               },
               "download-time": "2.798933"
             }

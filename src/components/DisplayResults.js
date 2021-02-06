@@ -23,7 +23,6 @@ function DisplayResults(props) {
 
   return ( 
    <React.Fragment>
-      <div>Results</div>    
       {getAllResults(data)}
     </React.Fragment>
   );
