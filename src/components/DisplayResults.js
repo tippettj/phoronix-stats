@@ -11,6 +11,7 @@ function DisplayResults(props) {
   const getAllResults = (data) => {
     let testProfile = null;
   
+    console.log(data);
     if (data && data.length>0 ) {
       testProfile = data.map((profile, tpKey) =>  
         profile.packages.map((packs, key) => 

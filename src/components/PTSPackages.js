@@ -3,7 +3,7 @@ import React from 'react';
 import * as Constants from "../Constants";
 import useStyles from "./styles";
 
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Collapse from "@material-ui/core/Collapse";
 
@@ -21,66 +21,10 @@ import IconButton from "@material-ui/core/IconButton";
 
 import PTSMirrors from './PTSMirrors';
 
-// const useStyles = makeStyles((theme) => ({
-//     // ...theme.spread,
-//     root: {
-//       flexGrow: '100%',
-//     },
-//     heading: {
-//         fontSize: theme.typography.pxToRem(15),
-//         color: "#000000", //black
-//         flexBasis: "20%",
-//         flexShrink: 0,
-//         marginLeft: "1.5em"
-//     },
-//     secondaryHeading: {
-//         fontSize: theme.typography.pxToRem(15),
-//         flexBasis: "33.33%",
-//         color: theme.palette.text.secondary
-//     },
-//     cell_title: {
-//         fontSize: "10px",
-//         width: 100,
-//         minWidth: 1,
-//         color: "#000000",   //white
-//         backgroundColor: "#2Ecc71", //green
-//         //flexBasis: 'fit-content'
-  
-//       },
-//     cell_long: {
-//       fontSize: "10px",
-//       width: 400,
-//       minWidth: 1,
-//       backgroundColor: '#ee82ee'
-
-//     },
-//     cell_short: {
-//         fontSize: "10px",
-//         width: 100,
-//         backgroundColor: '#E74C3C', //red
-//         padding: "0px"
-  
-//       },
-//     //   cell_mirror_title: {
-//     //     fontSize: "10px",
-//     //     width: 150,
-//     //     backgroundColor: '#AE44AD',  //purple
-//     //     padding: "0px",
-//     //     //flexBasis: 'fit-content'
-//     //   },
-//     //   cell_mirror: {
-//     //     fontSize: "10px",
-//     //     //width: 1000,
-//     //     backgroundColor: '#3498DB', //blue
-//     //     padding: "0px",
-//     //     flexBasis: 'fit-content'
-//     //   },
-//   }));
-
   // Lot of TableCells so styled instead of using className
   const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
+      //backgroundColor: theme.palette.common.black,
       color: theme.palette.common.white,
       padding: "0px",
       backgroundColor: "#CCD1D1", //light grey
@@ -109,18 +53,12 @@ const PTSPackages = props => {
         return props.data.mirror.some((mirror) => mirror.status === Constants.JSON_FAILED)
     }
 
-    // const hasNotTestedStatus = (props) => {
-    //     return props.data.mirror.some((mirror) => mirror.status === Constants.JSON_NOT_TESTED)
-    // }
-
     const getMirrors = (props) => {
         let status = "unknown";
         if (props.status) {
             status = (<span>{props.status}</span>);     
         } else {
             status = props.map((mir, key) => {
-                // return <PTSMirrors classes={classes} key={key} identifier={identifier} data={mir}/>
-
                 return <PTSMirrors  key={key} identifier={identifier} data={mir}/>
             })
         }
@@ -137,6 +75,7 @@ const PTSPackages = props => {
                                 <IconButton
                                     aria-label="expand row"
                                     size="small"
+                                    style={{borderRadius:16}}
                                     onClick={() => setOpen(!open)}
                                 >
                                     {/* {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} */}

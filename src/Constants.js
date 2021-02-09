@@ -13,5 +13,6 @@ export const JSON_PASSED = "Passed";
 export const JSON_MD5 = "md5";
 export const JSON_SHA256 = "sha256";
 export const JSON_NOT_TESTED="Not Tested";
+export const JSON_HTTP_CODE="HTTP Code";
 
 

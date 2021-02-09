@@ -8,11 +8,11 @@ import { FormControlLabel } from '@material-ui/core';
 
 // List of checkboxes that can be applied to the JSON data to extract results
 const checkboxList = [
-    Constants.ALL,
-    Constants.FAILED,
-    Constants.MD5,
-    Constants.SHA256,
-    Constants.REDIRECT
+    Constants.ALL, 
+    Constants.FAILED, 
+    Constants.MD5, 
+    Constants.SHA256, 
+    Constants.REDIRECT,     
   ];
 
 // Takes the filter list and sets default properties to create checkboxes
@@ -40,13 +40,31 @@ export function useCheckboxes(defaultCheckboxes) {
    * @param checked boolean
    */ 
   function manageState(index,checked) {
+    const all = 0;
+    const allFailed = 1;
+    const md5Failed = 2;
+    const shaFailed = 3;
+    const redirects = 4;
+
     // All selected -> Turn off all other filters
-    if (index === 0 && checked === true) {
-      checkboxes.filter( i => i.name !== 'All' ? i : null ).map(t => t.checked = false);
+    if (index === all && checked === true) {
+      checkboxes.filter( i => i.name !== Constants.ALL ? i : null ).map(t => t.checked = false);
     }
-    // If Success or Failure Selected --> turn of all
-    
-    // If failure selected -> display md5, sha256, and redirects, turn of success and all
+
+    if (index === allFailed) {
+      checkboxes.filter( i => i.name !== Constants.FAILED ? i : null ).map(t => t.checked = false);
+    }
+
+    if (index === redirects) {
+      checkboxes.filter( i => i.name !== Constants.REDIRECT ? i : null ).map(t => t.checked = false);
+    }
+
+    // md5 and sha256 can be selected at the same time --> adds up to all Failures
+    if (index === md5Failed || index === shaFailed) {
+      checkboxes[all].checked = false;
+      checkboxes[allFailed].checked = false;
+      checkboxes[redirects].checked = false;
+    }
   }
 
   // Sets the state of a specific checkbox
@@ -64,6 +82,19 @@ export function useCheckboxes(defaultCheckboxes) {
   };
 }
 
+const createCheckbox = (checkboxes, setCheckbox, index) => {
+  return (
+    <FormControlLabel 
+            control={<Checkbox
+              checked={checkboxes[index].checked}
+                  onChange={e => {
+                  setCheckbox(checkboxes[index].idx, e.target.checked);
+                }}
+            />}
+            label={checkboxes[index].name}
+          />
+  )
+}
 
 function Checkboxes({ checkboxes, setCheckbox }) {
   return (
@@ -71,90 +102,14 @@ function Checkboxes({ checkboxes, setCheckbox }) {
       <Grid 
         container
         direction="column">
-        {/* All Test */}
-        <Grid item>
-          <FormControlLabel 
-            control={<Checkbox
-              checked={checkboxes[0].checked}
-                  onChange={e => {
-                  setCheckbox(checkboxes[0].idx, e.target.checked);
-                }}
-            />}
-            label={checkboxes[0].name}
-          />
-        </Grid>
-        {/* All Failures */}
-        <Grid item container>
-          <Grid item>
-            <FormControlLabel
-              control={<Checkbox
-                checked={checkboxes[1].checked}
-                    onChange={e => {
-                    setCheckbox(checkboxes[1].idx, e.target.checked);
-                  }}
-              />}
-              label={checkboxes[1].name}
-            />
+        <Grid item> {createCheckbox(checkboxes, setCheckbox, 0)}</Grid>
+          <Grid item container>
+            <Grid item>{createCheckbox(checkboxes, setCheckbox, 1)}</Grid>
+            <Grid item>{createCheckbox(checkboxes, setCheckbox, 2)}</Grid>
+            <Grid item>{createCheckbox(checkboxes, setCheckbox, 3)}</Grid>
           </Grid>
-          {/* MD5 Failures */}
-          <Grid item>
-            <FormControlLabel
-                control={<Checkbox
-                  checked={checkboxes[2].checked}
-                      onChange={e => {
-                      setCheckbox(checkboxes[2].idx, e.target.checked);
-                    }}
-                />}
-                label={checkboxes[2].name}
-              />
-          </Grid>
-          {/* SHA256 Failures */}
-          <Grid item>
-            <FormControlLabel
-                control={<Checkbox
-                  checked={checkboxes[3].checked}
-                      onChange={e => {
-                      setCheckbox(checkboxes[3].idx, e.target.checked);
-                    }}
-                />}
-              label={checkboxes[3].name}
-            />
-          </Grid>
-        </Grid>
-        {/* Redirects */}
-        <Grid item>
-          <FormControlLabel
-                control={<Checkbox
-                  checked={checkboxes[4].checked}
-                      onChange={e => {
-                      setCheckbox(checkboxes[4].idx, e.target.checked);
-                    }}
-                />}
-                label={checkboxes[4].name}
-              />
-        </Grid>
+        <Grid item>{createCheckbox(checkboxes, setCheckbox, 4)}</Grid>
       </Grid>
-      {/* {checkboxes.map((checkbox, i) => (
-        <FormControlLabel
-          control={<Checkbox
-            checked={checkbox.checked}
-                onChange={e => {
-                setCheckbox(i, e.target.checked);
-              }}
-          />}
-          label={checkbox.name}
-        />
-        // <label key={i}>
-        //   <input
-        //     type="checkbox"
-        //     checked={checkbox.checked}
-        //     onChange={e => {
-        //       setCheckbox(i, e.target.checked);
-        //     }}
-        //   />
-        //   {checkbox.name}
-        // </label>
-      ))} */}
     </React.Fragment>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 
 import Failures from './PTSFailures';
 
@@ -20,28 +20,11 @@ import TableBody from '@material-ui/core/TableBody';
 
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from "@material-ui/core/IconButton";
-import {StyledTableCell, packageStyles } from "./PTSPackages";
+
+import {StyledTableCell } from "./PTSPackages";
 
 import startCase from 'lodash/startCase';
 
-// const useStyles = makeStyles((theme) => ({
-//     cell_mirror_title: {
-//         fontSize: "10px",
-//         width: 150,
-//         backgroundColor: '#AE44AD',  //purple
-//         padding: "0px",
-//         //flexBasis: 'fit-content'
-//       },
-//       cell_mirror: {
-//         fontSize: "10px",
-//         //width: 1000,
-//         backgroundColor: '#3498DB', //blue
-//         padding: "0px",
-//         flexBasis: 'fit-content'
-//       },
-// }));
-
-// }));
 /**
  * Displays the data that falls under the mirror array. 
  * This data relates to how each mirror defined by 'url' peformed during the test.
@@ -52,12 +35,11 @@ import startCase from 'lodash/startCase';
 const PTSMirrors = (props) => {
     //const {status, url, failures} = props.data;
     const [openMirror, setOpenMirror] = React.useState(false);
-   //const classes = props.classes;
-   const classes= useStyles();
-   const theme = useTheme();
-   console.log("Theme=", theme);
+    //const classes = props.classes;
+    const classes= useStyles();
+    const theme = useTheme();
     const identifier = props.identifier;
-   console.log("classes ......", classes);
+
     // open the url. Since most of the urls are downloadable in the JSON, downloads URL.
     const handleClick = (e) => {
         window.open(e.target.innerHTML, "_blank");
@@ -65,12 +47,17 @@ const PTSMirrors = (props) => {
     }
 
     // Determines the type of data in the cell and returns text, or link
-    const getFormattedCell = (value) => {
-        if (value.toString().includes("http")) {
-            var n = value.indexOf("http");
-            var text = value.slice(0, n);
-            var httpText = value.slice(n, value.length)
-            return (<Typography>{text}
+    const getFormattedCell = (key, value) => {
+        var text = (<Typography className={classes.secondaryHeading}>{value}</Typography>);
+
+        if (key.toLowerCase() === "duplicate") {
+            var str = value.slice(0, value.indexOf(" "));
+            text = (<Typography className={classes.secondaryHeading}>{str}</Typography>);
+        } 
+
+        if (key.toLowerCase() === "url") {
+            var httpText = value.slice(value.indexOf("http"), value.length)
+            text = (<Typography>
                         <Link
                             color="primary"
                             href="{n}"
@@ -81,12 +68,11 @@ const PTSMirrors = (props) => {
                     </Typography>);
         }
 
-       return (<Typography className={classes.secondaryHeading}>{value}</Typography>);
+       return text;
     }
     
     // Mirror collapse component. Will display all the mirror data in collapsible format.
     const CollapseComponent = (props) => {
-        console.log("theme", props.theme, props);
         var containsFailures = null;
 
         const result = Object.entries(props.data).map(([key, value], idx) => {
@@ -99,7 +85,7 @@ const PTSMirrors = (props) => {
                         <Typography className={classes.heading}>{startCase(key)}</Typography>
                     </StyledTableCell>
                     <StyledTableCell  className={classes.cell_mirror} >
-                        {getFormattedCell(value)}
+                        {getFormattedCell(key,value)}
                     </StyledTableCell>  
                 </TableRow> );  
         });
@@ -112,28 +98,29 @@ const PTSMirrors = (props) => {
 
     }
 
-    const hasFailedStatus = (props) => {
-        console.log("status=", props.data.status !==Constants.JSON_PASSED);
-        return (props.data.status !== Constants.JSON_PASSED)
-    }
-
     return (
         <React.Fragment>
             <TableRow>
                 <StyledTableCell  />
-                    <StyledTableCell >
+                    <StyledTableCell className={classes.cell_long} style={{verticalAlign: "text-top"}}>
                         <IconButton
                             key={identifier}
                             aria-label="expand row"
                             size="small"
+                            style={{borderRadius:16}}
                             onClick={() => setOpenMirror(!openMirror)}>
                             <Typography 
-                                className={classes.heading} 
+                                className={classes.mirrorHeading} 
                                 style={{marginLeft: "0px", color:(props.data.status !==Constants.JSON_PASSED) ? theme.palette.secondary.main: theme.palette.text.primary}}
                             >Mirror
                             </Typography>
+                            <Typography 
+                                style={{marginLeft: "20px"}}
+                            >{props.data.url}
+                            </Typography>
                         </IconButton>
                     </StyledTableCell>   
+                           
             </TableRow>
         
             <TableRow>

@@ -24,7 +24,7 @@
             {
               "status": "Passed",
               "duplicate": "pts/aobench-1.0.0 copied from http://phoronix-test-suite.com/benchmark-files/aobench-20180207.zip",
-              "url": "http://phoronix-test-suite.com/benchmark-files/aobench-20180207.zip",
+              "url": "http://phoronix-test-suite.com/benchmark-files/aobench-20180207.ziphttp://phoronix-test-suite.com/benchmark-files/aobench-20180207.ziphttp://phoronix-test-suite.com/benchmark-files/aobench-20180207.zip",
               "download-time": "0.151005"
             }
           ]
@@ -220,6 +220,99 @@
               "status": "Passed",
               "url": "https://mirrors.huaweicloud.com/apache/hbase/2.2.3/hbase-2.2.3-bin.tar.gz",
               "download-time": 31.063049
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "profile-name": "pts/apache-1.7.0",
+      "packages": [
+        {
+          "identifier": "pts/apache-1.7.0",
+          "pts-filename": "httpd-2.4.29.tar.bz2",
+          "pts-filesize": "6567926",
+          "pts-sha256": "777753a5a25568a2a27428b2214980564bc1c38c1abf9ccc7630b639991f7f00",
+          "pts-md5": "0c599404ef6b69eee95bcd9fcd094407",
+          "mirror": [
+            {
+              "status": "Passed",
+              "duplicate": "Duplicate file downloaded from test profile pts/apache-1.7.2",
+              "url": "http://archive.apache.org/dist/httpd/httpd-2.4.29.tar.bz2",
+              "download-time": "2.269342"
+            },
+            {
+              "status": "Passed",
+              "duplicate": "Duplicate file downloaded from test profile pts/apache-1.7.2",
+              "url": "http://ftp.lfs-matrix.net/pub/blfs/conglomeration/httpd/httpd-2.4.29.tar.bz2",
+              "download-time": "1.183817"
+            }
+          ]
+        },
+        {
+          "identifier": "pts/apache-1.7.0",
+          "pts-filename": "apache-ab-test-files-1.tar.gz",
+          "pts-filesize": "6008",
+          "pts-sha256": null,
+          "pts-md5": "ca0c5bf0dd482a2847c68a52c0759942",
+          "mirror": [
+            {
+              "status": "Passed",
+              "duplicate": "Duplicate file downloaded from test profile pts/apache-1.7.2",
+              "url": "http://www.phoronix-test-suite.com/benchmark-files/apache-ab-test-files-1.tar.gz",
+              "download-time": "0.065224"
+            },
+            {
+              "status": "Passed",
+              "duplicate": "Duplicate file downloaded from test profile pts/apache-1.7.2",
+              "url": "http://www.phoronix.net/downloads/phoronix-test-suite/benchmark-files/apache-ab-test-files-1.tar.gz",
+              "download-time": "0.083034"
+            }
+          ]
+        },
+        {
+          "identifier": "pts/apache-1.7.0",
+          "pts-filename": "apr-1.6.3.tar.bz2",
+          "pts-filesize": "854100",
+          "pts-sha256": "131f06d16d7aabd097fa992a33eec2b6af3962f93e6d570a9bd4d85e95993172",
+          "pts-md5": "12f2a349483ad6f12db49ba01fbfdbfa",
+          "mirror": [
+            {
+              "status": "Failed",
+              "duplicate": "Duplicate file downloaded from test profile pts/apache-1.7.1",
+              "url": "http://apache.cs.utah.edu//apr/apr-1.6.3.tar.bz2",
+              "failures": {
+                "vendor": "HTTP Code: 404"
+              }
+            },
+            {
+              "status": "Passed",
+              "duplicate": "Duplicate file downloaded from test profile pts/apache-1.7.2",
+              "url": "http://archive.apache.org/dist/apr/apr-1.6.3.tar.bz2",
+              "download-time": "1.346657"
+            }
+          ]
+        },
+        {
+          "identifier": "pts/apache-1.7.0",
+          "pts-filename": "apr-util-1.6.1.tar.bz2",
+          "pts-filesize": "428595",
+          "pts-sha256": "d3e12f7b6ad12687572a3a39475545a072608f4ba03a6ce8a3778f607dd0035b",
+          "pts-md5": "8ff5dc36fa39a2a3db1df196d3ed6086",
+          "mirror": [
+            {
+              "status": "Passed",
+              "duplicate": "Duplicate file downloaded from test profile pts/apache-1.7.0",
+              "url": "https://www.apache.org/dist/apr/apr-util-1.6.1.tar.bz2",
+              "redirectTo": "https://downloads.apache.org/apr/apr-util-1.6.1.tar.bz2",
+              "download-time": "1.556952"
+            },
+            {
+              "status": "Passed",
+              "duplicate": "Duplicate file downloaded from test profile pts/apache-1.7.2",
+              "url": "http://apache.cs.utah.edu//apr/apr-util-1.6.1.tar.bz2",
+              "redirectTo": "https://downloads.apache.org/apr/apr-util-1.6.1.tar.bz2",
+              "download-time": "1.142027"
             }
           ]
         }
