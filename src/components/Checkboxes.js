@@ -96,7 +96,7 @@ const createCheckbox = (checkboxes, setCheckbox, index) => {
   )
 }
 
-function Checkboxes({ checkboxes, setCheckbox }) {
+function Checkboxes({ checkboxes, setCheckbox}) {
   return (
     <React.Fragment>
       <Grid 

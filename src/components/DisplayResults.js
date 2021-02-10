@@ -1,5 +1,6 @@
 import React from 'react';
-import PTSPackages from './PTSPackages';
+import PTSProfile from './PTSProfile';
+
 
 /**
  * Displays the results based on the filters(checkboxes) selected.
@@ -11,12 +12,10 @@ function DisplayResults(props) {
   const getAllResults = (data) => {
     let testProfile = null;
   
-    console.log(data);
     if (data && data.length>0 ) {
-      testProfile = data.map((profile, tpKey) =>  
-        profile.packages.map((packs, key) => 
-        <PTSPackages key={key} data={packs} />     )
-      )
+      testProfile = data.map((profile, tpKey) =>  {
+        return (<PTSProfile key={tpKey} data={profile}/> );
+      })
   
       return testProfile;
     }

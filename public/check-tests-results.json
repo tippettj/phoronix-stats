@@ -317,5 +317,76 @@
           ]
         }
       ]
+    },
+    {
+      "profile-name": "pts/blake2-1.1.0",
+      "packages": [
+        {
+          "identifier": "pts/blake2-1.1.0",
+          "pts-filename": "blake2_code_20130131.zip",
+          "pts-filesize": "465360",
+          "pts-sha256": "a3cb02348195353741891ba55a9506312a8144bf33f4b382e8749e9e57ce843a",
+          "pts-md5": "613cd1ebe6e0bec589cb6580161b23ca",
+          "mirror": [
+            {
+              "status": "Failed",
+              "duplicate": "Duplicate file downloaded from test profile pts/blake2-1.1.0",
+              "url": "https://blake2.net/blake2_code_20130131.zip",
+              "failures": {
+                "vendor": "HTTP Code: 301"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "profile-name": "pts/primesieve-1.4.0",
+      "packages": [
+        {
+          "identifier": "pts/primesieve-1.4.0",
+          "pts-filename": "primesieve-6.2.tar.gz",
+          "pts-filesize": "154325",
+          "pts-sha256": "c4d1c358ab95b370dcac317fe1820e41d60460b22e450359ebc4bdd507bb2547",
+          "pts-md5": "07ca71f4f40cca2f32c4a620d0e9d88e",
+          "mirror": [
+            {
+              "status": "Passed",
+              "url": "https://dl.bintray.com/kimwalisch/primesieve/primesieve-6.2.tar.gz",
+              "download-time": 0.158338
+            },
+            {
+              "status": "Passed",
+              "url": "http://dl.bintray.com/kimwalisch/primesieve/primesieve-6.2.tar.gz",
+              "download-time": "0.194247",
+              "duplicate": "Duplicate file downloaded from test profile pts/primesieve-1.4.1"
+            }
+          ]
+        },
+        {
+          "identifier": "pts/primesieve-1.4.0",
+          "pts-filename": "primesieve-6.2-win64-console.zip",
+          "pts-filesize": "301406",
+          "pts-sha256": "366cb96c596073a3211de6eb2292da2be806c4521bd35a652a5bf3430c82641c",
+          "pts-md5": "ee69c203ac81234cf06423097a74ff81",
+          "mirror": [
+            {
+              "status": "Failed",
+              "url": "https://dl.bintray.com/kimwalisch/primesieve/primesieve-6.2-win64-console.zip",
+              "failures": {
+                "vendor": "HTTP Code: 302"
+              }
+            },
+            {
+              "status": "Failed",
+              "url": "http://dl.bintray.com/kimwalisch/primesieve/primesieve-6.2-win64-console.zip",
+              "failures": {
+                "vendor": "HTTP Code: 302"
+              },
+              "duplicate": "Duplicate file downloaded from test profile pts/primesieve-1.4.1"
+            }
+          ]
+        }
+      ]
     }
   ]

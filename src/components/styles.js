@@ -2,6 +2,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     // ...theme.spread,
+    notchedOutline: {
+        borderWidth: '2px',
+        //borderColor: '#285F80 !important'
+        borderColor: 'rgba(0,0,0,0.54)'
+      },
+    
     root: {
       flexGrow: '100%',
     },
@@ -13,6 +19,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '5px 30px',
         marginRight: '20px',
         fontSize: 12,
+        marginTop: "0.5em"
     },
     title: {
         marginBottom: '10px',

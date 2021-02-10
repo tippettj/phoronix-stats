@@ -8,6 +8,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar'; 
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+
 
 import 'fontsource-roboto';
 
@@ -18,18 +20,35 @@ import {theme} from './theme';
 import "./styles.css";
 import useStyles from "./styles";
 
+function getSearchData(searchValue, data) {
+    console.log("data=", data);
+    console.log("search=", searchValue);
+
+}
 
 export function FilterForm(props) {
     const [display, setDisplay] = useState(false);  // display the results of the search on the page
+    const [searchValue, setSearchValue] = useState(null);
+    //const [currDataSet, setCurrDataSet] = useState(props.data);
     const checkboxes = useCheckboxes();             // filter to determine which results to display
     const classes = useStyles();
 
+    console.log("Data", props.data);
     // display the results on the page
-    const handleSubmit = (event) => {
+    const handleDisplay = (event) => {
         event.preventDefault();
         setDisplay(true);
+        console.log("Display=", display);
     }
 
+    // display the results on the page
+    const handleSearch = (event, data) => {
+        console.log(event.target.value);
+        event.preventDefault();
+        getSearchData(searchValue, data);
+        console.log("Search Value=", searchValue);
+
+    }
     // clear form of all data and reset checkboxes
     const clearForm = (event) => {
         checkboxes.checkboxes.map((box, idx) => checkboxes.setCheckbox(idx, false));
@@ -89,19 +108,17 @@ export function FilterForm(props) {
     }
 
     function getRedirectData(data) {
-        let testProfile = null;
-
         if (data && data.length>0 ) {
-          testProfile = data.filter((profile) => {
+          return data.filter((profile) => {
               return profile.packages.some((packs) => {
                 return packs.mirror.some(mirror => {
-                   if (mirror.status === Constants.FAILED) {
-                       console.log(mirror);
-                    }
+                    if (mirror.failures && mirror.failures.vendor)   
+                        return (mirror.status === Constants.JSON_FAILED && (mirror.failures.vendor.includes('301') || mirror.failures.vendor.includes('302')))
+                    else
+                        return false;     
                 }  
             )})
         })
-        return testProfile;
       } 
     }  
 
@@ -114,6 +131,7 @@ export function FilterForm(props) {
         let results = data;
         const filters = checkboxes.checkboxes.filter((checks) => checks.checked === true).map((checkbox) => checkbox.name);
         console.log("Filters->", filters);
+        
         if (filters.includes(Constants.ALL)) 
             results = data;
 
@@ -123,6 +141,7 @@ export function FilterForm(props) {
         if (filters.includes(Constants.REDIRECT))
             results = getRedirectData(data);
       
+        console.log("Results=", results);
         return results;
     }
 
@@ -130,7 +149,7 @@ export function FilterForm(props) {
         <ThemeProvider theme={theme}>
             <Container maxWidth="lg">
                 <React.Fragment>
-                    <form onSubmit={(e) => handleSubmit(e)}>
+                    <form onSubmit={(e) => handleDisplay(e)}>
                         <div className="App">
                             <AppBar>
                                 <Toolbar className={classes.toolbar}>
@@ -141,25 +160,50 @@ export function FilterForm(props) {
                                 </Toolbar>
                             </AppBar>
                         </div>
-                        <Checkboxes {...checkboxes}/>
-                        <Button 
-                            className={classes.button}
-                            onClick={handleSubmit}>
-                            Search
-                        </Button>
-                        <Button 
-                            className={classes.button}
-                            startIcon={<ClearIcon />}
-                            onClick={(e) => clearForm(e)}>
-                            Clear
-                        </Button>
-                        <TextField 
-                            variant="outlined"
-                            color="primary"
-                            label="Test Profile"
-                        />
-                        <Divider />
+                        <Grid container spacing={1} className={classes.container}>
+                            <Grid item xs={6}>
+                                <Checkboxes {...checkboxes}  />
+                                <Button 
+                                    className={classes.button}
+                                    onClick={handleDisplay}>
+                                    Display
+                                </Button>
+                                <Button 
+                                    className={classes.button}
+                                    startIcon={<ClearIcon />}
+                                    onClick={(e) => clearForm(e)}>
+                                    Clear
+                                </Button>
+                            </Grid>
+                            <Grid item xs={6}  >
+                                <Grid container spacing={1} style={{marginTop:"0.5em"}}>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            id="outlined-helperText"
+                                            label="Profile Name"
+                                            defaultValue=""
+                                            variant="outlined"
+                                            size="small"
+                                            color="primary"
+                                            InputProps={{classes: {notchedOutline:classes.notchedOutline}}}
+                                            onChange={(e) => setSearchValue(e.target.value)}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <Button 
+                                            id="search"
+                                            className={classes.button}
+                                            style={{marginLeft: "-2em"}}
+                                             onClick={(e)=>handleSearch(e)}
+                                           > Search
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Divider style={{marginTop: "1em"}}/>
                         {(display) ? <DisplayResults results={getData(props.data)}/> : null }
+
                     </form>
                 </React.Fragment>
             </Container>

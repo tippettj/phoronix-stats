@@ -33,6 +33,7 @@ import startCase from 'lodash/startCase';
  * Mirror -> [{status, duplicate, url, failures {}, download-time}]
  */
 const PTSMirrors = (props) => {
+    console.log("PTSMirrors");
     //const {status, url, failures} = props.data;
     const [openMirror, setOpenMirror] = React.useState(false);
     //const classes = props.classes;
