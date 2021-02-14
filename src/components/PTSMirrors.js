@@ -33,7 +33,6 @@ import startCase from 'lodash/startCase';
  * Mirror -> [{status, duplicate, url, failures {}, download-time}]
  */
 const PTSMirrors = (props) => {
-    console.log("PTSMirrors");
     //const {status, url, failures} = props.data;
     const [openMirror, setOpenMirror] = React.useState(false);
     //const classes = props.classes;
@@ -73,7 +72,7 @@ const PTSMirrors = (props) => {
     }
     
     // Mirror collapse component. Will display all the mirror data in collapsible format.
-    const CollapseComponent = (props) => {
+    const CollapseMirrorComponent = (props) => {
         var containsFailures = null;
 
         const result = Object.entries(props.data).map(([key, value], idx) => {
@@ -81,17 +80,25 @@ const PTSMirrors = (props) => {
                 containsFailures = <Failures key={idx} classes={classes} failed={props.data.failures} />
                 return null;
              } else 
-                return (<TableRow key={idx}>
+                return (
+                   <TableRow key={idx}>
+                   <StyledTableCell /> 
+                     {/* <StyledTableCell> */}
+                                 
+                     {/* </StyledTableCell> */}
                     <StyledTableCell className={classes.cell_mirror_title} >
                         <Typography className={classes.heading}>{startCase(key)}</Typography>
                     </StyledTableCell>
-                    <StyledTableCell  className={classes.cell_mirror} >
+                    <StyledTableCell  colSpan={2} className={classes.cell_mirror} >
                         {getFormattedCell(key,value)}
                     </StyledTableCell>  
-                </TableRow> );  
+                    
+                    </TableRow>
+
+             );  
         });
         
-        // Pushing failures to the end of the list for asthetic reasons
+        // Pushing failures to the end of the list for aesthetics
         if (containsFailures !==null) 
             result.push(containsFailures);
 
@@ -103,42 +110,25 @@ const PTSMirrors = (props) => {
         <React.Fragment>
             <TableRow>
                 <StyledTableCell  />
-                    <StyledTableCell className={classes.cell_long} style={{verticalAlign: "text-top"}}>
-                        <IconButton
-                            key={identifier}
-                            aria-label="expand row"
-                            size="small"
-                            style={{borderRadius:16}}
-                            onClick={() => setOpenMirror(!openMirror)}>
-                            <Typography 
-                                className={classes.mirrorHeading} 
-                                style={{marginLeft: "0px", color:(props.data.status !==Constants.JSON_PASSED) ? theme.palette.secondary.main: theme.palette.text.primary}}
-                            >Mirror
-                            </Typography>
-                            <Typography 
-                                style={{marginLeft: "20px"}}
-                            >{props.data.url}
-                            </Typography>
-                        </IconButton>
-                    </StyledTableCell>   
+                <StyledTableCell   colSpan={3} style={{verticalAlign: "text-top"}}>
+                        <Typography 
+                            onClick={() => setOpenMirror(!openMirror)} className={classes.mirrorHeading} 
+                            style={{marginLeft: "0px", color:(props.data.status !==Constants.JSON_PASSED) ? theme.palette.secondary.main: theme.palette.text.primary}}
+                        >{props.data.url}
+                        </Typography>
+                        {/* <Typography 
+                            style={{marginLeft: "20px"}}
+                        >{props.data.url}
+                        </Typography> */}
+                </StyledTableCell>   
                            
             </TableRow>
-        
-            <TableRow>
-                <StyledTableCell />
-                <StyledTableCell>
-                    <Table size="small">
-                        <TableBody>
-                            <Collapse
-                                in={openMirror}
-                                timeout='auto'
-                                component={() => CollapseComponent(props)}
-                                unmountOnExit>
-                            </Collapse>
-                        </TableBody>
-                    </Table>
-                </StyledTableCell>
-            </TableRow>
+            <Collapse
+                        in={openMirror}
+                        timeout='auto'
+                        component={() => CollapseMirrorComponent(props)}
+                        unmountOnExit>
+            </Collapse>    
         </React.Fragment>
     )
 

@@ -1,3 +1,4 @@
+import { CircularProgress } from '@material-ui/core';
 import React from 'react';
 import PTSProfile from './PTSProfile';
 
@@ -6,10 +7,10 @@ import PTSProfile from './PTSProfile';
  * Displays the results based on the filters(checkboxes) selected.
  * @param props the results to be displayed. Note the filters have already been applied.
  */
-function DisplayResults(props) {
+function PTSResults(props) {
   const data = props.results;
   
-  const getAllResults = (data) => {
+  const getResults = (data) => {
     let testProfile = null;
   
     if (data && data.length>0 ) {
@@ -23,9 +24,9 @@ function DisplayResults(props) {
 
   return ( 
    <React.Fragment>
-      {getAllResults(data)}
+      {getResults(data)}
     </React.Fragment>
   );
 }
 
-export default DisplayResults;
+export default PTSResults;

@@ -2,11 +2,17 @@ import './App.css';
 import axios from 'axios';
 import React,{useState, useEffect} from 'react';
 import { FilterForm } from './components/FilterForm';
+import { CircularProgress, LinearProgress } from '@material-ui/core';
+import useStyles from './components/styles';
+import { Container } from '@material-ui/core';
 
 function App() {
+  //const apiEndPoint = "check-tests-results copy.json";
   const apiEndPoint = "check-tests-results.json";
+  const classes = useStyles();
 
   const [data,setData]=useState([]);
+  const [loading, setLoading] = useState(true);
 
   // UseEffect runs when component mounts and also when it updates
   // Since we are changing the state of data, it will run again and again unless we set the second arg to [].
@@ -15,6 +21,7 @@ function App() {
      const getData = async () => {
         const result = await axios(apiEndPoint);
         setData(result.data);
+        setLoading(false);
     }
 
     getData();
@@ -22,8 +29,8 @@ function App() {
   },[])
 
   return (
-    <div>
-      <FilterForm data={data}/>  
+    <div >
+      {loading ? <LinearProgress  className={classes.progressBar}/> : <FilterForm data={data}/> } 
     </div>
   );
 
