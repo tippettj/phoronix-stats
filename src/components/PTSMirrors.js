@@ -33,7 +33,6 @@ import startCase from 'lodash/startCase';
  * Mirror -> [{status, duplicate, url, failures {}, download-time}]
  */
 const PTSMirrors = (props) => {
-    console.log("PTSMirrors");
     //const {status, url, failures} = props.data;
     const [openMirror, setOpenMirror] = React.useState(false);
     //const classes = props.classes;
@@ -73,7 +72,7 @@ const PTSMirrors = (props) => {
     }
     
     // Mirror collapse component. Will display all the mirror data in collapsible format.
-    const CollapseComponent = (props) => {
+    const CollapseMirrorComponent = (props) => {
         var containsFailures = null;
 
         const result = Object.entries(props.data).map(([key, value], idx) => {
@@ -91,7 +90,7 @@ const PTSMirrors = (props) => {
                 </TableRow> );  
         });
         
-        // Pushing failures to the end of the list for asthetic reasons
+        // Pushing failures to the end of the list for aesthetics
         if (containsFailures !==null) 
             result.push(containsFailures);
 
@@ -132,7 +131,7 @@ const PTSMirrors = (props) => {
                             <Collapse
                                 in={openMirror}
                                 timeout='auto'
-                                component={() => CollapseComponent(props)}
+                                component={() => CollapseMirrorComponent(props)}
                                 unmountOnExit>
                             </Collapse>
                         </TableBody>

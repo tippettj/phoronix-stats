@@ -4,22 +4,25 @@ import * as Constants from "../Constants";
 
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+
 import { FormControlLabel } from '@material-ui/core';
 
 // List of checkboxes that can be applied to the JSON data to extract results
 const checkboxList = [
-    Constants.ALL, 
-    Constants.FAILED, 
-    Constants.MD5, 
-    Constants.SHA256, 
-    Constants.REDIRECT,     
+    {name: Constants.ALL, checked: true}, 
+    {name: Constants.FAILED, checked: false},
+    {name: Constants.MD5, checked: false},
+    {name: Constants.SHA256, checked: false},
+    {name: Constants.REDIRECT, checked: false}, 
+    {name: Constants.NOT_TESTED, checked: false}  
   ];
 
 // Takes the filter list and sets default properties to create checkboxes
 const getDefaultCheckboxes = () =>
   checkboxList.map((box, idx) => ({
-    name: box,
-    checked: false,
+    name: box.name,
+    checked: box.checked,
     idx,
   }));
 
@@ -45,6 +48,8 @@ export function useCheckboxes(defaultCheckboxes) {
     const md5Failed = 2;
     const shaFailed = 3;
     const redirects = 4;
+    const notTested = 5;
+
 
     // All selected -> Turn off all other filters
     if (index === all && checked === true) {
@@ -59,20 +64,29 @@ export function useCheckboxes(defaultCheckboxes) {
       checkboxes.filter( i => i.name !== Constants.REDIRECT ? i : null ).map(t => t.checked = false);
     }
 
+    if (index === notTested) {
+      checkboxes.filter( i => i.name !== Constants.NOT_TESTED ? i : null ).map(t => t.checked = false);
+    }
+
     // md5 and sha256 can be selected at the same time --> adds up to all Failures
     if (index === md5Failed || index === shaFailed) {
       checkboxes[all].checked = false;
       checkboxes[allFailed].checked = false;
       checkboxes[redirects].checked = false;
+      checkboxes[notTested].checked = false;
+
     }
   }
 
   // Sets the state of a specific checkbox
   function setCheckbox(index, checked) {
+    console.log("setCheckbox....");
     manageState(index,checked);
     const newcheckboxes = [...checkboxes];
     newcheckboxes[index].checked = checked;
     setCheckboxes(newcheckboxes);
+    console.log("endCheckbox....");
+
   }
 
   // same as a standard use hook
@@ -97,19 +111,29 @@ const createCheckbox = (checkboxes, setCheckbox, index) => {
 }
 
 function Checkboxes({ checkboxes, setCheckbox}) {
+
+  React.useEffect(()=> {
+    console.log("Checkboxes In use effect.....")
+})
+
   return (
     <React.Fragment>
-      <Grid 
-        container
-        direction="column">
-        <Grid item> {createCheckbox(checkboxes, setCheckbox, 0)}</Grid>
-          <Grid item container>
+        <Grid item xs={12} sm={3} md={2} item>{createCheckbox(checkboxes, setCheckbox, 0)}</Grid>
+        <Grid item xs={12} sm={3} md={3} item>
+          <Grid container direction="column" >
             <Grid item>{createCheckbox(checkboxes, setCheckbox, 1)}</Grid>
             <Grid item>{createCheckbox(checkboxes, setCheckbox, 2)}</Grid>
             <Grid item>{createCheckbox(checkboxes, setCheckbox, 3)}</Grid>
           </Grid>
-        <Grid item>{createCheckbox(checkboxes, setCheckbox, 4)}</Grid>
-      </Grid>
+        </Grid>
+        <Grid item xs={12} sm={3} md={3} item>
+          <Grid container direction="column" >
+            <Grid item >{createCheckbox(checkboxes, setCheckbox, 4)}</Grid>
+            <Grid item >{createCheckbox(checkboxes, setCheckbox, 5)}</Grid>
+          </Grid>
+        </Grid>
+
+
     </React.Fragment>
   );
 }

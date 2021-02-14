@@ -1,9 +1,11 @@
 // Checkbox names and filters
 export const ALL = "All Tests"
-export const FAILED = "All Failures"
-export const MD5 = "MD5 Failures"
-export const SHA256 = "SHA256 Failures"
+export const FAILED = "All Fails"
+export const MD5 = "MD5 Fails"
+export const SHA256 = "SHA256 Fails"
 export const REDIRECT = "Redirects"
+export const NOT_TESTED = "Not Tested"
+
 
 
 // JSON

@@ -20,26 +20,43 @@ import {StyledTableCell} from "./PTSPackages";
 
 const PTSProfile = props => {
     const profile=props.data;
-
+    const [open, setOpen] = React.useState(false);             // hold state for the collapse component holding the profile name
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
 
+    // Determines if the test has failed. 
+    // A failure of JSON_NOT_TESTED means that no PTS Data is available to display so set the notTested flag.
     const hasFailedStatus = (packages) => {
         return packages.some(pack => 
-            pack.mirror.some(mirror => mirror.status === Constants.JSON_FAILED)
+            pack.mirror.some(mirror => mirror.status === Constants.JSON_FAILED) 
+        
     )};
 
+    // In the case of no download.xml file, the test status will be NOT_TESTED.
+    // This does not consitute a failure and there is not point in getting child components.
+    const notTested = (packages) => {
+        return packages.some(pack => 
+            pack.mirror.some(mirror => 
+                 (mirror.status === Constants.JSON_NOT_TESTED)                            
+            ) 
+        
+    )};
+
+    // Get the data for each package
     const getPackages = (packages) => {
         let testProfile = null;
       
         if (packages && packages.length>0 ) {
           testProfile = packages.map((pack, pKey) =>  {
-            return (<PTSPackages key={pKey} data={pack}/> );
+            if ( notTested(packages) )
+                return <Typography key={pKey} className={classes.secondaryHeading} style={{marginLeft:"1.4em"}}>Not Tested. download.xml file did not exist.</Typography>;
+            else
+                return (<PTSPackages key={pKey} data={pack}/> );
           })
       
           return testProfile;
         }
       }
+
     return (
         <TableContainer >
             <Table>
@@ -52,7 +69,6 @@ const PTSProfile = props => {
                                 style={{borderRadius:16}}
                                 onClick={() => setOpen(!open)}
                             >
-                                {/* {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} */}
                                 <Typography color={hasFailedStatus(profile.packages)?'secondary':'primary'} style={{fontWeight:600}} >{profile['profile-name']}</Typography>
                             </IconButton>
                         </StyledTableCell>

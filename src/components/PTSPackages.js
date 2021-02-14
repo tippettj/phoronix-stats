@@ -3,7 +3,7 @@ import React from 'react';
 import * as Constants from "../Constants";
 import useStyles from "./styles";
 
-import { withStyles, useTheme } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Collapse from "@material-ui/core/Collapse";
 
@@ -15,7 +15,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from "@material-ui/core/IconButton";
 
-import blueGrey from '@material-ui/core/colors/blueGrey';
+//import blueGrey from '@material-ui/core/colors/blueGrey';
 
 
 import PTSMirrors from './PTSMirrors';
@@ -49,7 +49,7 @@ const PTSPackages = props => {
     const packages = props.data;
 
     const classes = useStyles();
-    const theme = useTheme();
+    //const theme = useTheme();
     const [open, setOpen] = React.useState(false);
 
     const {identifier, "pts-filename" : filename, "pts-filesize" : filesize, "pts-sha256" : sha256, "pts-md5" : md5, mirror} = props.data;
@@ -60,6 +60,7 @@ const PTSPackages = props => {
 
     const getMirrors = (props) => {
         let status = "unknown";
+
         if (props.status) {
             status = (<span>{props.status}</span>);     
         } else {
