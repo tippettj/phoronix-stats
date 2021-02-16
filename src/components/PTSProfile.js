@@ -27,8 +27,7 @@ const PTSProfile = props => {
     // A failure of JSON_NOT_TESTED means that no PTS Data is available to display so set the notTested flag.
     const hasFailedStatus = (packages) => {
         return packages.some(pack => 
-            pack.mirror.some(mirror => mirror.status === Constants.JSON_FAILED) 
-        
+            pack.mirror.some(mirror => mirror.status === Constants.JSON_FAILED)   
     )};
 
     // In the case of no download.xml file, the test status will be NOT_TESTED.
@@ -63,38 +62,38 @@ const PTSProfile = props => {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell >
-                            <IconButton
+                            {/* <IconButton
                                 aria-label="expand row"
                                 size="small"
                                 style={{borderRadius:16}}
                                 onClick={() => setOpen(!open)}
-                            >
-                                <Typography color={hasFailedStatus(profile.packages)?'secondary':'primary'} style={{fontWeight:600}} >{profile['profile-name']}</Typography>
-                            </IconButton>
+                            > */}
+                                <Typography onClick={() => setOpen(!open)} color={hasFailedStatus(profile.packages)?'secondary':'primary'} style={{fontWeight:600}} >{profile['profile-name']}</Typography>
+                            {/* </IconButton> */}
                         </StyledTableCell>
                     </TableRow> 
                 
                     
-                    <TableRow>
-                        <StyledTableCell>
-                            <Collapse in={open} timeout="auto" unmountOnExit >
-                                <Table size="small">
-                                    <TableBody>
-                                        <TableRow>
-                                        <StyledTableCell>
-                                             {getPackages(profile.packages)} 
-                                        </StyledTableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </Collapse> 
-                        </StyledTableCell> 
-                    </TableRow>
+                     <TableRow>
+                         <StyledTableCell>
+                             <Collapse in={open} timeout="auto" unmountOnExit >
+                                  <Table size="small">
+                                     <TableBody>
+                                         <TableRow>
+                                         <StyledTableCell>
+                                              {getPackages(profile.packages)} 
+                                         </StyledTableCell>
+                                         </TableRow>
+                                     </TableBody>
+                                 </Table>
+                             </Collapse> 
+                         </StyledTableCell> 
+                     </TableRow>
 
-                </TableHead>
-            </Table> 
-        </TableContainer>
-    )
+                 </TableHead>
+             </Table> 
+         </TableContainer>
+     )
 }
 
 export default PTSProfile;

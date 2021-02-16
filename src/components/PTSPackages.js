@@ -77,14 +77,14 @@ const PTSPackages = props => {
              <TableBody>
                 <TableRow>
                     <StyledTableCell style={{background:"#d6dada"}}>
-                        <IconButton
+                        {/* <IconButton
                             aria-label="expand row"
                             size="small"
                             style={{borderRadius:16}}
                             onClick={() => setOpen(!open)}
-                        >
-                            <Typography color={hasFailedStatus(packages)?'secondary':'primary'} style={{fontWeight:400, marginLeft:"20px"}} >{filename}</Typography>
-                        </IconButton>
+                        > */}
+                            <Typography onClick={() => setOpen(!open)} color={hasFailedStatus(packages)?'secondary':'primary'} style={{fontWeight:400, marginLeft:"20px"}} >{filename}</Typography>
+                        {/* </IconButton> */}
                     </StyledTableCell>
                 </TableRow> 
                 

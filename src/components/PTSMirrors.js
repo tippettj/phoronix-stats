@@ -103,14 +103,14 @@ const PTSMirrors = (props) => {
             <TableRow>
                 <StyledTableCell  />
                     <StyledTableCell className={classes.cell_long} style={{verticalAlign: "text-top"}}>
-                        <IconButton
+                        {/* <IconButton
                             key={identifier}
                             aria-label="expand row"
                             size="small"
                             style={{borderRadius:16}}
-                            onClick={() => setOpenMirror(!openMirror)}>
+                            onClick={() => setOpenMirror(!openMirror)}> */}
                             <Typography 
-                                className={classes.mirrorHeading} 
+                                onClick={() => setOpenMirror(!openMirror)} className={classes.mirrorHeading} 
                                 style={{marginLeft: "0px", color:(props.data.status !==Constants.JSON_PASSED) ? theme.palette.secondary.main: theme.palette.text.primary}}
                             >Mirror
                             </Typography>
@@ -118,7 +118,7 @@ const PTSMirrors = (props) => {
                                 style={{marginLeft: "20px"}}
                             >{props.data.url}
                             </Typography>
-                        </IconButton>
+                        {/* </IconButton> */}
                     </StyledTableCell>   
                            
             </TableRow>
