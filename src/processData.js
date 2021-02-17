@@ -1,8 +1,27 @@
 import * as Constants from './Constants';
 
+
+// Determines if the test has failed. 
+    // A failure of JSON_NOT_TESTED means that no PTS Data is available to display so set the notTested flag.
+    const hasFailedPackageStatus = (packages) => {
+        return packages.some(pack => 
+            pack.mirror.some(mirror => mirror.status === Constants.JSON_FAILED)   
+    )};
+
+// In the case of no download.xml file, the test status will be NOT_TESTED.
+// This does not consitute a failure and there is not point in getting child components.
+function notTestedPackage(packages) {
+    return packages.packages.some(pack => 
+        pack.mirror.some(mirror => 
+                (mirror.status === Constants.JSON_NOT_TESTED)                            
+        ) 
+    
+)};
+
 function getNotTestedData(data) {
     if (data && data.length > 0 ) {
         return data.filter((profile) => {
+            // return notTestedPackage(profile);
             return profile.packages.some((packs) => {
               return packs.mirror.some(mirror => (mirror.status === Constants.JSON_NOT_TESTED)    
           )})
@@ -87,5 +106,5 @@ function getFailedData(data, searchFilters = null) {
 
         return failedData;
     }
-export {getNotTestedData, getRedirectData, getSearchData, getFailedData}
+export {getNotTestedData, getRedirectData, getSearchData, getFailedData, notTestedPackage, hasFailedPackageStatus}
 

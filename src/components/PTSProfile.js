@@ -10,11 +10,9 @@ import Collapse from "@material-ui/core/Collapse";
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableHead from '@material-ui/core/TableHead';
 
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
-import IconButton from "@material-ui/core/IconButton";
 import {StyledTableCell} from "./PTSPackages";
 
 
@@ -46,8 +44,16 @@ const PTSProfile = props => {
       
         if (packages && packages.length>0 ) {
           testProfile = packages.map((pack, pKey) =>  {
-            if ( notTested(packages) )
-                return <Typography key={pKey} className={classes.secondaryHeading} style={{marginLeft:"1.4em"}}>Not Tested. download.xml file did not exist.</Typography>;
+            if ( notTested(packages) )  // yes packages. 
+                return (
+
+                        <TableRow key={pKey}>
+                            <StyledTableCell key={pKey} colSpan={4}>
+                                <Typography key={pKey} className={classes.secondaryHeading} style={{marginLeft:"1.4em"}}>Not Tested. download.xml file did not exist.</Typography>
+                            </StyledTableCell>
+                        </TableRow>
+
+                )
             else
                 return (<PTSPackages key={pKey} data={pack}/> );
           })
@@ -56,43 +62,43 @@ const PTSProfile = props => {
         }
       }
 
+    // const CollapseProfileComponent = (profile) => {
+    //     return(        
+    //                 getPackages(profile.packages)
+    //     )
+    // }
+
+    // const CollapseProfile1Component = (profile) => {
+    //     return(  
+    //         <Table size="small">
+    //             <TableBody>
+    //                 <TableRow>
+    //                     <StyledTableCell>
+    //                         {getPackages(profile.packages)} 
+    //                     </StyledTableCell>
+    //                 </TableRow>
+    //             </TableBody>
+    //         </Table>
+    //     )
+    // }
     return (
-        <TableContainer >
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <StyledTableCell >
-                            {/* <IconButton
-                                aria-label="expand row"
-                                size="small"
-                                style={{borderRadius:16}}
-                                onClick={() => setOpen(!open)}
-                            > */}
-                                <Typography onClick={() => setOpen(!open)} color={hasFailedStatus(profile.packages)?'secondary':'primary'} style={{fontWeight:600}} >{profile['profile-name']}</Typography>
-                            {/* </IconButton> */}
+        <>
+                {/* <TableBody className={classes.borders}> */}
+                    <TableRow className={classes.borders}>
+                        <StyledTableCell colSpan={4}>
+                            <Typography onClick={() => setOpen(!open)} color={hasFailedStatus(profile.packages)?'secondary':'primary'} style={{fontWeight:600}} >{profile['profile-name']}</Typography>
                         </StyledTableCell>
                     </TableRow> 
-                
-                    
-                     <TableRow>
-                         <StyledTableCell>
-                             <Collapse in={open} timeout="auto" unmountOnExit >
-                                  <Table size="small">
-                                     <TableBody>
-                                         <TableRow>
-                                         <StyledTableCell>
-                                              {getPackages(profile.packages)} 
-                                         </StyledTableCell>
-                                         </TableRow>
-                                     </TableBody>
-                                 </Table>
+                {/* </TableBody > */}
+                  
+                             <Collapse 
+                                in={open} 
+                                timeout="auto" 
+                                component={() => getPackages(profile.packages)}
+                                unmountOnExit >    
                              </Collapse> 
-                         </StyledTableCell> 
-                     </TableRow>
-
-                 </TableHead>
-             </Table> 
-         </TableContainer>
+                             </>
+                
      )
 }
 

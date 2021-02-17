@@ -15,13 +15,17 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
+import TableContainer from '@material-ui/core/TableContainer';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+
 
 
 
 import 'fontsource-roboto';
 
 import Checkboxes, {useCheckboxes} from './Checkboxes';
-import DisplayResults from './DisplayResults';
+import PTSResults from './PTSResults';
 import * as Constants from '../Constants';
 import {theme} from './theme';
 import "./styles.css";
@@ -58,18 +62,22 @@ export function FilterForm(props) {
     }
 
     /**
-     * Get the data to display
+     * Get the data to display. 
+     * The default is all data as per the  JSON file. This method filters and returns the subset of all data
+     * based on the checkboxes selected.
+     * The checkboxes work as an AND when the profile name has been populated.
      * @param {*} data all the json results
+     * @return results all data that matches the filter AND profile name search criteria.
      * 
      */
     const getData = (allData) => {
         let data = [...allData];
         let results = data;
 
-
+        // determine which checkboxes have been selected
         const filters = checkboxes.checkboxes.filter((checks) => checks.checked === true).map((checkbox) => checkbox.name);
         
-        // If no checkboxes have been selected then nothing should be displayed.
+        // If no checkboxes have been selected then display nothing
         if (filters && filters.length === 0 ) {
             results = null;
         }
@@ -169,9 +177,16 @@ export function FilterForm(props) {
                         </Grid>
                                     
                         <Divider style={{marginTop: "1em"}}/>
-                        <DisplayResults results={getData(props.data)} />
+                        </form>
+                        <TableContainer >
+                            <Table className={classes.borders}>
+                                <TableBody className={classes.borders}>
+                                <PTSResults results={getData(props.data)} />
+                                </TableBody>
+                                </Table> 
+         </TableContainer>
 
-                    </form>
+
                 </React.Fragment>
             </Container>
         </ThemeProvider>
