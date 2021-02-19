@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-
-import * as Constants from "../Constants";
-
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-
 import { FormControlLabel } from '@material-ui/core';
+
+import * as Constants from "../Constants";
+import useStyles from "./styles";
 
 // List of checkboxes that can be applied to the JSON data to extract results
 const checkboxList = [
@@ -16,7 +14,7 @@ const checkboxList = [
     {name: Constants.SHA256, checked: false},
     {name: Constants.REDIRECT, checked: false}, 
     {name: Constants.NOT_TESTED, checked: false}  
-  ];
+];
 
 // Takes the filter list and sets default properties to create checkboxes
 const getDefaultCheckboxes = () =>
@@ -24,18 +22,19 @@ const getDefaultCheckboxes = () =>
     name: box.name,
     checked: box.checked,
     idx,
-  }));
+}));
 
-  /**
-   * Determines the state of the various checkboxes defined in the filterList.
-   *  The combination of these checkboxes will be used to determing the checkboxes to apply to the JSON values
-   * @param defaultCheckboxes 
-   * @return all the checkboxes and their current state
-   */
+/**
+ * Determines the state of the various checkboxes defined in the filterList.
+ *  The combination of these checkboxes will be used to determing the checkboxes to apply to the JSON values
+ * @param defaultCheckboxes 
+ * @return all the checkboxes and their current state
+ */
 export function useCheckboxes(defaultCheckboxes) {
   const [checkboxes, setCheckboxes] = useState(
     defaultCheckboxes || getDefaultCheckboxes(),
   );
+
 
   /**
    * Determines the logic of the checkboxes
@@ -80,13 +79,10 @@ export function useCheckboxes(defaultCheckboxes) {
 
   // Sets the state of a specific checkbox
   function setCheckbox(index, checked) {
-    console.log("setCheckbox....");
     manageState(index,checked);
     const newcheckboxes = [...checkboxes];
     newcheckboxes[index].checked = checked;
     setCheckboxes(newcheckboxes);
-    console.log("endCheckbox....");
-
   }
 
   // same as a standard use hook
@@ -96,44 +92,39 @@ export function useCheckboxes(defaultCheckboxes) {
   };
 }
 
-const createCheckbox = (checkboxes, setCheckbox, index) => {
+const createCheckbox = (classes, checkboxes, setCheckbox, index) => {
   return (
     <FormControlLabel 
-            control={<Checkbox
-              checked={checkboxes[index].checked}
-                  onChange={e => {
-                  setCheckbox(checkboxes[index].idx, e.target.checked);
-                }}
-            />}
-            label={checkboxes[index].name}
-          />
+      control=
+        {<Checkbox
+          className={classes.checkboxes}
+          style={{'&:hover': {backgroundColor: "transparent"}}}
+          checked={checkboxes[index].checked}
+          onChange={e => {setCheckbox(checkboxes[index].idx, e.target.checked)}}
+        />}
+      label={checkboxes[index].name}
+    />
   )
 }
 
 function Checkboxes({ checkboxes, setCheckbox}) {
-
-  React.useEffect(()=> {
-    console.log("Checkboxes In use effect.....")
-})
-
+  const classes =useStyles();
   return (
     <React.Fragment>
-        <Grid item xs={12} sm={3} md={2} item>{createCheckbox(checkboxes, setCheckbox, 0)}</Grid>
-        <Grid item xs={12} sm={3} md={3} item>
+        <Grid item xs={12} sm={3} md={2} lg={2}>{createCheckbox(classes, checkboxes, setCheckbox, 0)}</Grid>
+        <Grid item xs={12} sm={3} md={3} lg={2}>
           <Grid container direction="column" >
-            <Grid item>{createCheckbox(checkboxes, setCheckbox, 1)}</Grid>
-            <Grid item>{createCheckbox(checkboxes, setCheckbox, 2)}</Grid>
-            <Grid item>{createCheckbox(checkboxes, setCheckbox, 3)}</Grid>
+            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, 1)}</Grid>
+            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, 2)}</Grid>
+            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, 3)}</Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} sm={3} md={3} item>
+        <Grid item xs={12} sm={3} md={3} lg={2}>
           <Grid container direction="column" >
-            <Grid item >{createCheckbox(checkboxes, setCheckbox, 4)}</Grid>
-            <Grid item >{createCheckbox(checkboxes, setCheckbox, 5)}</Grid>
+            <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, 4)}</Grid>
+            <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, 5)}</Grid>
           </Grid>
         </Grid>
-
-
     </React.Fragment>
   );
 }
