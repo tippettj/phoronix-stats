@@ -14,15 +14,18 @@ export const theme = createMuiTheme({
         secondary: {
             main: '#d32f2f', 
         },
+        text: {
+            secondary: "#424242",
+        }
 
     },
-    overrides: {
-        MuiContainer: {
-            root : {
-              marginLeft: "10px",
-            }
-        }
-    }
+    // overrides: {
+    //     MuiContainer: {
+    //         root : {
+    //           marginLeft: "10px",
+    //         }
+    //     }
+    // }
 });
 
 export default theme;
