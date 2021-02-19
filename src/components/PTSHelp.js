@@ -87,19 +87,19 @@ export default function PTSHelp() {
                 <Box ml={5} fontWeight='fontWeightBold' display='inline'> All Fails:</Box> Displays all tests that failed.
             </Typography>
             <Typography>
-                <Box ml={5} fontWeight='fontWeightBold' display='inline'> MD5 Fails:</Box> Tests which failed the MD5 checksum.
+                <Box ml={5} fontWeight='fontWeightBold' display='inline'> MD5 Fails:</Box> Displays all tests which failed the MD5 checksum.
             </Typography>
             <Typography>
-                <Box ml={5} fontWeight='fontWeightBold' display='inline'> SHA256 Fails:</Box> Tests which failed the SHA256 checksum.
+                <Box ml={5} fontWeight='fontWeightBold' display='inline'> SHA256 Fails:</Box> Displays all tests which failed the SHA256 checksum.
             </Typography>
             <Typography>
-                <Box ml={5} fontWeight='fontWeightBold' display='inline'> Rediects</Box> Tests which resulted in a HTTP 301 or 302 status.
+                <Box ml={5} fontWeight='fontWeightBold' display='inline'> Rediects:</Box> Displays all tests which resulted in a HTTP 301 or 302 status.
             </Typography>
             <Typography>
-                <Box ml={5} fontWeight='fontWeightBold' display='inline'> Not Tested</Box> Tests which were not tested and have no results.
+                <Box ml={5} fontWeight='fontWeightBold' display='inline'> Not Tested:</Box> Displays all tests which were not tested and have no results.
             </Typography>
             <Typography>
-                <Box ml={5} fontWeight='fontWeightBold' display='inline'> Profile Name</Box> Searches for the test with the given profile name. Can be used in conjunction with the filters.
+                <Box ml={5} fontWeight='fontWeightBold' display='inline'> Profile Name:</Box> Searches for the test with the given profile name. Can be used in conjunction with the filters.
             </Typography>
                
             <p/>
