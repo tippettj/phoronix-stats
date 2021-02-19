@@ -1,22 +1,20 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
-    // ...theme.spread,
-    // notchedOutline: {
-    //     borderWidth: '2px',
-    //     //borderColor: '#285F80 !important'
-    //     borderColor: 'rgba(0,0,0,0.54)'
-    //   },
-    
+   
     // Container
     root: {
-      flexGrow: 1,
+      // flexGrow: 1,
+      // alignItems: "center",
+      // justifyContent: "center",
     },
+
     progressBar: {
       color: theme.palette.secondary.main,
       position: "relative",
       marginTop: "20%"
     },
+
     // Clear Button
     button: {
         background: 'linear-gradient(45deg, #285F80 29%, #333333 81% )',
@@ -24,99 +22,120 @@ export const useStyles = makeStyles((theme) => ({
         borderRadius: 15,
         color: '#FFFFFF', // white
         padding: '5px 30px',
-        marginRight: '20px',
+        // marginRight: '20px',
         fontSize: 12,
         marginTop: "0.5em"
     },
-    title: {
-        marginBottom: '10px',
-    },
+    
     toolbar: {
-        marginBottom: '1em',
+      //background: 'linear-gradient(45deg, #285F80 29%, rgba(51,51,51,95) 91% )',
+      background: "#285F80",
+      padding: '1em',
     },
-    borders: {
-        borderWidth: 1,
-        borderColor: "red",
-        borderStyle: "solid",
-      
-    },
-    // Headings in Table, description in description = value
-    heading: {
-        // fontSize: theme.typography.pxToRem(15),
-        // color: "#000000", //black
-        // fontWeight:theme.typography.fontWeightMedium,
-        // //flexBasis: "40%",
-        // //flexShrink: 0,
-        // marginLeft: "1.5em"
-    },
-    // Heading in table value in description = value
-    secondaryHeading: {
-        // fontSize: theme.typography.pxToRem(15),
-        // flexBasis: "33.33%",
-        // color: theme.palette.text.secondary
-    },
-    // Heading under collapsed Mirror title in table, description
-    mirrorHeading: {
-        // fontSize: theme.typography.pxToRem(15),
-        // fontWeight:theme.typography.fontWeightBold,
-        // color: "#000000", //black
-        // //flexBasis: "90%",
-        // flexShrink: 0,
-        // marginLeft: "1.5em",
-        // maxWidth: theme.typography.pxToRem(800),
-        // textAlign: "inherit", 
-    },
-    // Heading under Failures Title
-    failuresHeading: {
-        // fontSize: theme.typography.pxToRem(15),
-        // color: "#000000", //black
-        // fontWeight:theme.typography.fontWeightMedium,
-        // //flexBasis: "40%",
-        // //flexShrink: 0,
-        // marginLeft: "1.5em"
-    },
-    // Title in a table cell
-    cell_title: {
-        // fontSize: "10px",
-        // // width: 100,
-        // minWidth: 1,
-        // marginRight: "2px",
-        // color: "#000000",   //white
-        // //backgroundColor: "#2Ecc71", //green
-        // //flexBasis: 'fit-content'
-        // verticalAlign: 'top',
-  
-      },
-    // generally description portion of table
-    cell_long: {
-      // fontSize: "10px",
-      // width: 400,
-      // minWidth: 1,
-      //backgroundColor: '#ee82ee'
 
+    // keep for debugging
+    borders: {
+        // borderWidth: 1,
+        // borderColor: "red",
+        // borderStyle: "solid", 
     },
-    // generally title portion of table
-    cell_short: {
-        // fontSize: "10px",
-        // width: 100,
-        // //backgroundColor: '#E74C3C', //red
-        // padding: "0px"
-  
+
+    // Rows containing the profile Name
+    profileNameRow: {
+      //backgroundColor: "#CCD1D1", //light grey
+      backgroundImage: 'linear-gradient(90deg, rgba(227,224,224, 5) 0%, rgba(126,159,178,1) 98%)',
+    },
+
+    // Profile Name titles
+    profileName:
+    {
+      padding: "0.5rem",
+      fontWeight: theme.typography.fontWeightBold,
+      '&:hover' : {
+        fontWeight:theme.typography.fontWeightBold,
+        cursor: "pointer",
       },
-      cell_mirror_title: {
-        // //fontSize: "10px",
-        // width: 160,
-        // //backgroundColor: '#AE44AD',  //purple
-        // //padding: "0px",
-        // //flexBasis: 'fit-content'
+    },
+
+    // Rows containing package Names title
+    packageName: {
+      marginLeft: "2em",
+      fontWeight: theme.typography.fontWeightMedium,
+      '&:hover' : {
+        fontWeight: theme.typography.fontWeightBold,
+        cursor: "pointer",
       },
-      cell_mirror: {
-        //fontSize: "10px",
-        //width: 1000,
-       //backgroundColor: '#3498DB', //blue
-        //padding: "0px",
-        //flexBasis: 'fit-content'
+      borderTopColor: "black",
+      borderTopWidth: "2px",
+      borderTopStyle: "solid",
+    },
+
+    // Rows containing package Names Details FileName/FileSize
+    packageNameRow: {
+      backgroundColor: "#d6dada",  
+    },
+
+    // Rows containing mirror details ie Status/Duplicate/Failures
+    mirrorRow: {
+      backgroundColor: "#d6dada",
+    },
+
+    // Rows containing failure details ie MD5/SHA246
+    failureRow: {
+      backgroundColor: "#d6dada",
+    },
+
+    // Heading throughout Table, usually keys in JSON File
+    heading: {
+         color: "#000000", //black
+         fontWeight:theme.typography.fontWeightMedium,
+         marginLeft: "3em"
+    },
+
+    // Headings throughout table, usually values from JSON file
+    secondaryHeading: {
+         color: theme.palette.text.secondary
+    },
+
+    // Heading under collapsed Mirror ie Mirror 1
+    mirrorHeading: {
+      marginLeft: "3em",
+      '&:hover' : {
+        fontWeight:theme.typography.fontWeightBold,
+        cursor: "pointer",
       },
+    },
+
+    // Heading under collapsed Mirror ie the url reflecting the mirror
+    mirrorSecondaryHeading: {
+      '&:hover' : {
+        fontWeight:theme.typography.fontWeightBold,
+        cursor: "pointer",
+      },
+      // textAlign: "inherit", 
+    },
+
+    // Headings for the mirror data. Usually keys like Status/Duplicate/Failures
+    mirrorDataHeading: {
+      color: "#000000", //black
+      fontWeight:theme.typography.fontWeightMedium,
+      width: "130px",
+    },
+
+    //TextField details
+    searchField: {
+      //backgroundColor: "#d7d8da", // a bit darker then #d3d5d8
+      backgroundColor: "#d3d5d8",
+      marginTop:"0.5em",
+    },
+
+    // disable the circle that appears when hovering over a checkbox
+    checkboxes: {
+      '&:hover': {
+        backgroundColor: "transparent"
+      },  
+    },
+    
   }));
 
   export default useStyles;

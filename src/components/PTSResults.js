@@ -1,4 +1,3 @@
-import { CircularProgress } from '@material-ui/core';
 import React from 'react';
 import PTSProfile from './PTSProfile';
 
@@ -10,20 +9,16 @@ import PTSProfile from './PTSProfile';
 function PTSResults(props) {
   const data = props.results;
   
-  const getResults = (data) => {
-    let testProfile = null;
-  
+  const getResults = (data) => {  
     if (data && data.length>0 ) {
-      testProfile = data.map((profile, tpKey) =>  {
-        return (<PTSProfile key={tpKey} data={profile}/> );
-      })
-  
-      return testProfile;
+      return data.map((profile, tpKey) =>  
+         (<PTSProfile key={tpKey} data={profile}/> )
+      )
     }
   }
 
   return ( 
-   <React.Fragment>
+    <React.Fragment>
       {getResults(data)}
     </React.Fragment>
   );
