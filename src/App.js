@@ -2,9 +2,8 @@ import './App.css';
 import axios from 'axios';
 import React,{useState, useEffect} from 'react';
 import { FilterForm } from './components/FilterForm';
-import { CircularProgress, LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@material-ui/core';
 import useStyles from './components/styles';
-import { Container } from '@material-ui/core';
 
 function App() {
   //const apiEndPoint = "check-tests-results copy.json";
