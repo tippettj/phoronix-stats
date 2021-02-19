@@ -1,29 +1,17 @@
 import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
-
-import Failures from './PTSFailures';
-
-
-import * as Constants from "../Constants";
-import useStyles from "./styles";
-
-
-
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
-
 import Collapse from "@material-ui/core/Collapse";
-
-
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-
 import TableRow from '@material-ui/core/TableRow';
-import IconButton from "@material-ui/core/IconButton";
-
-import {StyledTableCell } from "./PTSPackages";
 
 import startCase from 'lodash/startCase';
+
+import Failures from './PTSFailures';
+import * as Constants from "../Constants";
+import StyledTableCell from './StyledTableCell';
+import useStyles from "./styles";
+
 
 /**
  * Displays the data that falls under the mirror array. 
@@ -33,12 +21,9 @@ import startCase from 'lodash/startCase';
  * Mirror -> [{status, duplicate, url, failures {}, download-time}]
  */
 const PTSMirrors = (props) => {
-    //const {status, url, failures} = props.data;
     const [openMirror, setOpenMirror] = React.useState(false);
-    //const classes = props.classes;
     const classes= useStyles();
     const theme = useTheme();
-    const identifier = props.identifier;
 
     // open the url. Since most of the urls are downloadable in the JSON, downloads URL.
     const handleClick = (e) => {
@@ -51,19 +36,18 @@ const PTSMirrors = (props) => {
         var text = (<Typography className={classes.secondaryHeading}>{value}</Typography>);
 
         if (key.toLowerCase() === "duplicate") {
-            var str = value.slice(0, value.indexOf(" "));
+            var str = value.slice(value.lastIndexOf(" "), value.length);
             text = (<Typography className={classes.secondaryHeading}>{str}</Typography>);
         } 
 
         if (key.toLowerCase() === "url") {
-            var httpText = value.slice(value.indexOf("http"), value.length)
             text = (<Typography>
                         <Link
                             color="primary"
                             href="{n}"
                             rel="noopener"
                             onClick={(e) => handleClick(e)}>
-                            {httpText}
+                            {value}
                         </Link>
                     </Typography>);
         }
@@ -73,7 +57,7 @@ const PTSMirrors = (props) => {
     
     // Mirror collapse component. Will display all the mirror data in collapsible format.
     const CollapseMirrorComponent = (props) => {
-        var containsFailures = null;
+        var containsFailures = null; 
 
         const result = Object.entries(props.data).map(([key, value], idx) => {
             if (key.toLowerCase() === Constants.JSON_FAILURES.toLowerCase()) {
@@ -81,18 +65,14 @@ const PTSMirrors = (props) => {
                 return null;
              } else 
                 return (
-                   <TableRow key={idx}>
-                   <StyledTableCell /> 
-                     {/* <StyledTableCell> */}
-                                 
-                     {/* </StyledTableCell> */}
-                    <StyledTableCell className={classes.cell_mirror_title} >
-                        <Typography className={classes.heading}>{startCase(key)}</Typography>
-                    </StyledTableCell>
-                    <StyledTableCell  colSpan={2} className={classes.cell_mirror} >
-                        {getFormattedCell(key,value)}
-                    </StyledTableCell>  
-                    
+                   <TableRow key={idx} >
+                        <StyledTableCell className={classes.mirrorRow}/>   
+                        <StyledTableCell className={classes.mirrorRow}>
+                            <Typography className={classes.mirrorDataHeading}>{startCase(key)}</Typography>
+                        </StyledTableCell>
+                        <StyledTableCell  colSpan={2} className={classes.mirrorRow} >
+                            {getFormattedCell(key,value)}
+                        </StyledTableCell>  
                     </TableRow>
 
              );  
@@ -101,37 +81,38 @@ const PTSMirrors = (props) => {
         // Pushing failures to the end of the list for aesthetics
         if (containsFailures !==null) 
             result.push(containsFailures);
-
+        
         return result;
-
     }
 
     return (
         <React.Fragment>
-            <TableRow>
-                <StyledTableCell  />
-                <StyledTableCell   colSpan={3} style={{verticalAlign: "text-top"}}>
+            <TableRow className={classes.packageNameRow}>
+                <StyledTableCell>
+                    <Typography 
+                        onClick={() => setOpenMirror(!openMirror)} 
+                        className={classes.mirrorHeading}  
+                        style={{ color:(props.data.status !==Constants.JSON_PASSED) ? theme.palette.secondary.main: theme.palette.primary.main}}
+                    >Mirror {props.idx + 1}</Typography>
+                </StyledTableCell>
+                <StyledTableCell colSpan={3} style={{verticalAlign: "text-top"}}>
                         <Typography 
-                            onClick={() => setOpenMirror(!openMirror)} className={classes.mirrorHeading} 
-                            style={{marginLeft: "0px", color:(props.data.status !==Constants.JSON_PASSED) ? theme.palette.secondary.main: theme.palette.text.primary}}
+                            onClick={() => setOpenMirror(!openMirror)} 
+                            className={classes.mirrorSecondaryHeading} 
+                            style={{ color:(props.data.status !==Constants.JSON_PASSED) ? theme.palette.secondary.main: theme.palette.primary.main}}
                         >{props.data.url}
-                        </Typography>
-                        {/* <Typography 
-                            style={{marginLeft: "20px"}}
-                        >{props.data.url}
-                        </Typography> */}
-                </StyledTableCell>   
-                           
+                        </Typography>      
+                </StyledTableCell>               
             </TableRow>
+
             <Collapse
-                        in={openMirror}
-                        timeout='auto'
-                        component={() => CollapseMirrorComponent(props)}
-                        unmountOnExit>
-            </Collapse>    
+                in={openMirror}
+                timeout='auto'
+                component={() => CollapseMirrorComponent(props)}
+                unmountOnExit>
+            </Collapse>  
         </React.Fragment>
     )
-
 }
 
 export default PTSMirrors;
