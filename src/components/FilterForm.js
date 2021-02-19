@@ -9,54 +9,37 @@ import AppBar from '@material-ui/core/AppBar';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import HelpIcon from '@material-ui/icons/Help';
-import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 
-
-
-
 import 'fontsource-roboto';
 
 import Checkboxes, {useCheckboxes} from './Checkboxes';
+import PTSHelp from './PTSHelp';
 import PTSResults from './PTSResults';
 import * as Constants from '../Constants';
 import {theme} from './theme';
 import "./styles.css";
 import useStyles from "./styles";
-import { CircularProgress } from '@material-ui/core';
-
 import {getNotTestedData, getRedirectData, getSearchData, getFailedData} from '../processData';
 
 
 export function FilterForm(props) {
-    const [display, setDisplay] = useState(true);  // display the results of the search on the page
-    const [searchValue, setSearchValue] = useState("");
-    const checkboxes = useCheckboxes();             // filter to determine which results to display
-    const classes = useStyles();
-    const [dataLoaded, setDataLoaded] = useState(false);
-
-    React.useEffect(()=> {
-        console.log("FilterForm In use effect.....")
-    })
+    const [searchValue, setSearchValue] = useState(""); // value in the profileName text field
+    const checkboxes = useCheckboxes();                 // filter to determine which results to display
+    const classes = useStyles();                        
 
     // display the results on the page
     const handleDisplay = (event) => {
-        console.log("handle Display");
         event.preventDefault();
-        setDisplay(true);
     }
 
     // clear form of all data and reset checkboxes
     const clearForm = (event) => {
         checkboxes.checkboxes.map((box, idx) => checkboxes.setCheckbox(idx, false));
-        setDisplay(false);
         setSearchValue("");
         event.preventDefault();
     }
@@ -77,7 +60,7 @@ export function FilterForm(props) {
         // determine which checkboxes have been selected
         const filters = checkboxes.checkboxes.filter((checks) => checks.checked === true).map((checkbox) => checkbox.name);
         
-        // If no checkboxes have been selected then display nothing
+        // If no checkboxes have been selected, display nothing
         if (filters && filters.length === 0 ) {
             results = null;
         }
@@ -124,15 +107,14 @@ export function FilterForm(props) {
                                             >Check Tests Results
                                             </Typography>
                                         </Grid>
-                                        {/* <Grid item>
-                                            <HelpIcon onClick={e=>alert('Help')}/>
-                                        </Grid> */}
+                                        <Grid item>
+                                            <PTSHelp />
+                                        </Grid>
                                     </Grid>
                                 </Toolbar>
                             </AppBar>
                         </div>
-
-                        <Grid container  >
+                        <Grid container >
                             <Grid container item  
                                 style={{marginTop:"2em"}}
                                 justify="flex-start"
@@ -142,11 +124,10 @@ export function FilterForm(props) {
                                 <Checkboxes {...checkboxes}  />
                                     
                                 <Grid item xs={12} sm={3}>
+
                                     <TextField
-                                        id="search-profile-name"
                                         value={searchValue}
                                         label="Profile Name"
-                                        style={{marginTop:"0.5em"}}
                                         variant="filled"
                                         size="small"
                                         color="primary"
@@ -154,18 +135,21 @@ export function FilterForm(props) {
                                             shrink: true,
                                             }}
                                         InputProps={{
-                                            disableUnderline: true,
                                             startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment>,
+                                            disableUnderline: true,
+                                            className: classes.searchField
+
                                         }}
                                         onChange={(e) => setSearchValue(e.target.value)}   
                                     />                                 
                                 </Grid>
                             </Grid>
-                            <Grid container item  
-                                justify="flex-end"
-                                alignItems="flex-end"
+                            <Grid container 
+                                justify="flex-start"
+                                alignItems="flex-start"
                                 direction="row"> 
-                                <Grid item xs={12} sm={3} md={2}>
+                                <Grid item sm={9} md={8} lg={6} ></Grid>
+                                <Grid item>
                                     <Button 
                                         className={classes.button}
                                         startIcon={<ClearIcon />}
@@ -177,19 +161,18 @@ export function FilterForm(props) {
                         </Grid>
                                     
                         <Divider style={{marginTop: "1em"}}/>
-                        </form>
-                        <TableContainer >
-                            <Table className={classes.borders}>
-                                <TableBody className={classes.borders}>
-                                <PTSResults results={getData(props.data)} />
-                                </TableBody>
-                                </Table> 
-         </TableContainer>
+                    </form>
 
+                    <TableContainer >
+                        <Table className={classes.borders}>
+                            <TableBody className={classes.borders}>
+                                <PTSResults results={getData(props.data)} />
+                            </TableBody>
+                        </Table> 
+                    </TableContainer>
 
                 </React.Fragment>
             </Container>
         </ThemeProvider>
-
     )
 }
