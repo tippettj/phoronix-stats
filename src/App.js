@@ -6,8 +6,8 @@ import { LinearProgress } from '@material-ui/core';
 import useStyles from './components/styles';
 
 function App() {
-  //const apiEndPoint = "check-tests-results copy.json";
-  const apiEndPoint = "check-tests-results.json";
+  const apiEndPoint = "check-tests-results.json";   
+
   const classes = useStyles();
 
   const [data,setData]=useState([]);

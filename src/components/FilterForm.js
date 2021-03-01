@@ -24,7 +24,7 @@ import * as Constants from '../Constants';
 import {theme} from './theme';
 import "./styles.css";
 import useStyles from "./styles";
-import {getNotTestedData, getRedirectData, getSearchData, getFailedData} from '../processData';
+import {getNotTestedData, getRedirectData, getSearchData, getFailedData, getTimedOutData} from '../processData';
 
 
 export function FilterForm(props) {
@@ -86,6 +86,9 @@ export function FilterForm(props) {
       
         if (filters.includes(Constants.NOT_TESTED))
             results = getNotTestedData(data);
+
+        if (filters.includes(Constants.TIMED_OUT))
+            results = getTimedOutData(data);
 
         // if all fails display all the data
         return results;

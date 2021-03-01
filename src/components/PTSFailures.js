@@ -38,10 +38,10 @@ const PTSFailures = (props) => {
                         </>  
                     }
 
-                    <StyledTableCell className={classes.failureRow}>
-                        <Typography className={classes.heading} style={{marginLeft : "0px"}}>{keyFormatted}</Typography>
-                    </StyledTableCell>
                     <StyledTableCell className={classes.failureRow} >
+                        <Typography className={classes.failureHeading} style={{marginLeft : "0px"}}>{keyFormatted}</Typography>
+                    </StyledTableCell>
+                    <StyledTableCell className={classes.failureRow}>
                         <Typography className={classes.secondaryHeading}>{value}</Typography>
                     </StyledTableCell>
                 </TableRow>

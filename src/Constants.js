@@ -5,6 +5,8 @@ export const MD5 = "MD5 Fails"
 export const SHA256 = "SHA256 Fails"
 export const REDIRECT = "Redirects"
 export const NOT_TESTED = "Not Tested"
+export const TIMED_OUT = "Timed Out"
+
 
 
 
@@ -16,3 +18,5 @@ export const JSON_MD5 = "md5";
 export const JSON_SHA256 = "sha256";
 export const JSON_NOT_TESTED="Not Tested";
 export const JSON_HTTP_CODE="HTTP Code";
+export const JSON_TIMED_OUT=0;
+export const JSON_ERROR="error";

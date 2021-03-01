@@ -13,7 +13,9 @@ const checkboxList = [
     {name: Constants.MD5, checked: false},
     {name: Constants.SHA256, checked: false},
     {name: Constants.REDIRECT, checked: false}, 
-    {name: Constants.NOT_TESTED, checked: false}  
+    {name: Constants.NOT_TESTED, checked: false},
+    {name: Constants.TIMED_OUT, checked: false}  
+
 ];
 
 // Takes the filter list and sets default properties to create checkboxes
@@ -48,7 +50,7 @@ export function useCheckboxes(defaultCheckboxes) {
     const shaFailed = 3;
     const redirects = 4;
     const notTested = 5;
-
+    const timedOut = 6;
 
     // All selected -> Turn off all other filters
     if (index === all && checked === true) {
@@ -67,13 +69,17 @@ export function useCheckboxes(defaultCheckboxes) {
       checkboxes.filter( i => i.name !== Constants.NOT_TESTED ? i : null ).map(t => t.checked = false);
     }
 
+    if (index === timedOut) {
+      checkboxes.filter( i => i.name !== Constants.TIMED_OUT ? i : null ).map(t => t.checked = false);
+    }
+
     // md5 and sha256 can be selected at the same time --> adds up to all Failures
     if (index === md5Failed || index === shaFailed) {
       checkboxes[all].checked = false;
       checkboxes[allFailed].checked = false;
       checkboxes[redirects].checked = false;
       checkboxes[notTested].checked = false;
-
+      checkboxes[timedOut].checked = false;
     }
   }
 
@@ -123,6 +129,7 @@ function Checkboxes({ checkboxes, setCheckbox}) {
           <Grid container direction="column" >
             <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, 4)}</Grid>
             <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, 5)}</Grid>
+            <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, 6)}</Grid>
           </Grid>
         </Grid>
     </React.Fragment>
