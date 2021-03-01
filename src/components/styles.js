@@ -122,6 +122,11 @@ export const useStyles = makeStyles((theme) => ({
       width: "130px",
     },
 
+    // Headings for the failures
+    failureHeading: {
+      color: "#000000", //black
+      fontWeight:theme.typography.fontWeightMedium,
+ },
     //TextField details
     searchField: {
       //backgroundColor: "#d7d8da", // a bit darker then #d3d5d8

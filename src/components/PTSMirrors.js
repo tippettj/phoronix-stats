@@ -40,7 +40,7 @@ const PTSMirrors = (props) => {
             text = (<Typography className={classes.secondaryHeading}>{str}</Typography>);
         } 
 
-        if (key.toLowerCase() === "url") {
+        if (key.toLowerCase() === "url" || key.toLowerCase() === "redirectto") {
             text = (<Typography>
                         <Link
                             color="primary"
