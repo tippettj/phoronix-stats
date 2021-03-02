@@ -6,7 +6,9 @@ import { LinearProgress } from '@material-ui/core';
 import useStyles from './components/styles';
 
 function App() {
-  const apiEndPoint = "check-tests-results.json";   
+  //const apiEndPoint = "check-tests-results.json";   
+  const apiEndPoint = "https://raw.githubusercontent.com/tippettj/phoronix-test-suite/master/ob-cache/openbenchmarking.org/check-tests-results.json";   
+
 
   const classes = useStyles();
 
