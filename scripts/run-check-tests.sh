@@ -32,15 +32,15 @@ then
         echo "Running check-tests ..."
         #./phoronix-test-suite check-tests
 
-        if [ -e $PHORONIX_LOCAL_JSON] 
+        if [ -e $PHORONIX_LOCAL_JSON ] 
         then
             echo "Checking out gh-pages branch from $GIT_USER/phoronix-stats ..."
-            # mkdir -p $TEMP_GH_PAGES_DIR
-            # cd $TEMP_GH_PAGES_DIR
-            # git clone git@github.com:$USER/phoronix-stats.git
-            # cd $TEMP_GH_PAGES_DIR/phoronix-stats
-            # git checkout gh-pages
-            # cp $PHORONIX_LOCAL_JSON $TEMP_GH_PAGES_DIR/phoronix-stats
+            mkdir -p $TEMP_GH_PAGES_DIR
+            cd $TEMP_GH_PAGES_DIR
+            git clone git@github.com:$USER/phoronix-stats.git
+            cd $TEMP_GH_PAGES_DIR/phoronix-stats
+            git checkout gh-pages
+            cp $PHORONIX_LOCAL_JSON $TEMP_GH_PAGES_DIR/phoronix-stats
 
             echo "Pushing new JSON file to gh-pages branch in $USER/phoronix-stats"
             # git add $JSON_FILE
