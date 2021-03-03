@@ -18,7 +18,7 @@ then
     if [ -d $PHORONIX_ROOT/.git ] 
     then
         cd $PHORONIX_ROOT
-        echo "Pulling latest changes from $USER/phoronix-test-suite..."
+        echo "Pulling latest changes from $GIT_USER/phoronix-test-suite..."
         git pull
 
         # Back up last json file
@@ -34,10 +34,10 @@ then
 
         if [ -e $PHORONIX_LOCAL_JSON ] 
         then
-            echo "Checking out gh-pages branch from $GIT_USER/phoronix-stats ..."
+            echo "Checking out gh-pages branch from git repository $GIT_USER/phoronix-stats ..."
             mkdir -p $TEMP_GH_PAGES_DIR
             cd $TEMP_GH_PAGES_DIR
-            git clone git@github.com:$USER/phoronix-stats.git
+            git clone git@github.com:$GIT_USER/phoronix-stats.git
             cd $TEMP_GH_PAGES_DIR/phoronix-stats
             git checkout gh-pages
             cp $PHORONIX_LOCAL_JSON $TEMP_GH_PAGES_DIR/phoronix-stats
