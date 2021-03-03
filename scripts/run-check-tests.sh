@@ -15,22 +15,25 @@ RESULTS_DEST=$PHORONIX_STATS_ROOT/public
 
 if [ -d $PHORONIX_ROOT ]
 then
-    if [ -d $PHORONIX_ROOT/.git ] then
+    if [ -d $PHORONIX_ROOT/.git ] 
+    then
         cd $PHORONIX_ROOT
         echo "Pulling latest changes from $USER/phoronix-test-suite..."
         git pull
 
         # Back up last json file
-        if [ -e $PHORONIX_LOCAL_JSON] then
+        if [ -e $PHORONIX_LOCAL_JSON ] 
+        then
             rm $PHORONIX_LOCAL_JSON.*
-            echo $PHORONIX_LOCAL_JSON $PHORONIX_LOCAL_JSON.`$(date +%F)`
-            cp $PHORONIX_LOCAL_JSON $PHORONIX_LOCAL_JSON.`$(date +%F)`
+            echo $PHORONIX_LOCAL_JSON $PHORONIX_LOCAL_JSON.`(date +%F)`
+            cp $PHORONIX_LOCAL_JSON $PHORONIX_LOCAL_JSON.`(date +%F)`
         fi
 
         echo "Running check-tests ..."
         #./phoronix-test-suite check-tests
 
-        if [ -e $PHORONIX_LOCAL_JSON] then
+        if [ -e $PHORONIX_LOCAL_JSON] 
+        then
             echo "Checking out gh-pages branch from $GIT_USER/phoronix-stats ..."
             # mkdir -p $TEMP_GH_PAGES_DIR
             # cd $TEMP_GH_PAGES_DIR
