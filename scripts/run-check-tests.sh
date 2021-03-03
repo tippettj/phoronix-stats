@@ -23,6 +23,7 @@ then
         # Back up last json file
         if [ -e $PHORONIX_LOCAL_JSON] then
             rm $PHORONIX_LOCAL_JSON.*
+            echo $PHORONIX_LOCAL_JSON $PHORONIX_LOCAL_JSON.`$(date +%F)`
             cp $PHORONIX_LOCAL_JSON $PHORONIX_LOCAL_JSON.`$(date +%F)`
         fi
 
