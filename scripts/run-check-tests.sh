@@ -32,7 +32,7 @@ cleanUp() {
 #  Read any arguments
 while getopts 'dhcs:' flag; do
   case "${flag}" in
-    d) DEVMODE="true";
+    d) DEV_MODE="true" ;;
     s) DEV_RUNTIME=${OPTARG} ;;
     c) cleanUp ;;
     h) 
