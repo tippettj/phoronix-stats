@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 GIT_USER=tippettj
 # Directory where phoronix/phoronix-test-suite is cloned to
 PHORONIX_ROOT=$HOME/phoronix-test-suite 
@@ -71,7 +71,7 @@ then
 
         echo -e "${BLUE}Running check-tests ...${NC}"
 
-        if [ DEV_MODE ]
+        if [ ${DEV_MODE} ]
         then
             echo -e "${RED}In DEV MODE ... Will kill check-tests test in ${DEV_RUNTIME} secs. This will not produce a complete JSON file.${NC}"
             ./phoronix-test-suite check-tests pts/mkl-dnn-1.2.0  pts/minion-1.4.0
