@@ -17,10 +17,10 @@ BLUE='\033[1;36m'
 RED='\033[1;31m'
 NC='\033[0m' # No Color
 
-DEV_MODE=false;
-DEV_RUNTIME=12;
+DEV_MODE="false"
+DEV_RUNTIME=12
 
-cleanUp() {
+cleanUp() { 
     #Group id command --> ps x -o  "%p %r %y %x %c "
     echo "cleaning up"
     if [ -d $TEMP_GH_PAGES_DIR ]
@@ -32,7 +32,7 @@ cleanUp() {
 #  Read any arguments
 while getopts 'dhcs:' flag; do
   case "${flag}" in
-    d) DEVMODE='true';;
+    d) DEVMODE="true";
     s) DEV_RUNTIME=${OPTARG} ;;
     c) cleanUp ;;
     h) 
@@ -71,7 +71,7 @@ then
 
         echo -e "${BLUE}Running check-tests ...${NC}"
 
-        if [ ${DEV_MODE} ]
+        if [ "${DEV_MODE}" = "true"  ]
         then
             echo -e "${RED}In DEV MODE ... Will kill check-tests test in ${DEV_RUNTIME} secs. This will not produce a complete JSON file.${NC}"
             ./phoronix-test-suite check-tests pts/mkl-dnn-1.2.0  pts/minion-1.4.0
