@@ -13,16 +13,39 @@ PHORONIX_LOCAL_JSON=$HOME/.phoronix-test-suite/openbenchmarking.org/$JSON_FILE
 # directory where the client reads the json results
 RESULTS_DEST=$PHORONIX_STATS_ROOT/public 
 
-BLUE='\033[0;34m'
-RED='\033[33;31m'
+BLUE='\033[1;36m'
+RED='\033[1;31m'
 NC='\033[0m' # No Color
+
+DEV_MODE=false;
+DEV_RUNTIME=120;
+
+#  Read any arguments
+while getopts 'dhs:' flag; do
+  case "${flag}" in
+    d) DEVMODE='true';;
+    s) DEV_RUNTIME=${OPTARG} ;;
+    h) print_usage
+        echo "$package"
+        echo "Runs the Phoronix Test Suite check-tests command, generating a JSON file."
+        echo "JSON file is checked into git phoronix-stats repository for display in git pages."
+        echo " "
+        echo "$package [options]"
+        echo " "
+        echo "options:"
+        echo "-h,        Show help"
+        echo "-d,        Run in DEV MODE"
+        echo "-s=secs    Allows fast mode to test run-check-tests.sh. Use in DEV_MODE only."
+       exit 1 ;;
+  esac
+done
 
 if [ -d $PHORONIX_ROOT ]
 then
     if [ -d $PHORONIX_ROOT/.git ] 
     then
         cd $PHORONIX_ROOT
-        echo -e "${BLUE}Pulling latest changes from $GIT_USER/phoronix-test-suite...${NC}"
+        echo -e "${BLUE}Pulling latest changes from git repositor $GIT_USER/phoronix-test-suite...${NC}"
         git pull
 
         # Back up last json file
@@ -33,7 +56,18 @@ then
         fi
 
         echo -e "${BLUE}Running check-tests ...${NC}"
-        #./phoronix-test-suite check-tests
+
+        if [ DEV_MODE ]
+        then
+            echo -e "${RED}In DEV MODE ... Will kill check-tests test in ${DEV_RUNTIME} secs ${NC}. This will not produce a complete JSON file."
+            ./phoronix-test-suite check-tests &
+            _pid=`echo $!`
+            sleep $DEV_RUNTIME
+            # Kill all process in the pts commands Process Group
+            kill -- -${_pid}
+        else
+            ./phoronix-test-suite check-tests
+        fi
 
         if [ -e $PHORONIX_LOCAL_JSON ] 
         then
