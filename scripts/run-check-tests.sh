@@ -18,6 +18,8 @@ RESULTS_DEST=${PHORONIX_STATS_ROOT}/public
 BLUE='\033[1;36m'
 RED='\033[1;31m'
 NC='\033[0m' # No Color
+NCB='\033[1m' # No Color Bold
+
 
 DEV_MODE="false"
 DEV_RUNTIME=12
@@ -55,15 +57,19 @@ while getopts 'dhcs:' flag; do
     c) cleanUp ;;
     h) 
         echo " "
-        echo "run-check-tests [options] test-profiles"
+        echo "${NCB}NAME"
+        echo "      run-check-tests - runs the Phoronix Test Suite check-tests command"
         echo " "
-        echo "Runs the Phoronix Test Suite check-tests command, generating a JSON file."
-        echo "JSON file is checked into git phoronix-stats repository for display in phoronix-stats git pages."
+        echo "SYNOPSIS"
+        echo "      run-check-tests [options] test-profiles"
         echo " "
-        echo "options:"
-        echo "-h,        Show help"
-        echo "-d,        Run in DEV MODE. Named test-profiles will only run in DEV MODE"
-        echo "-c         Clean up if test was aborted early"
+        echo "DESCRIPTION"
+        echo "      Runs the Phoronix Test Suite check-tests command, generating a JSON file."
+        echo "      JSON file is checked into git phoronix-stats repository for display in phoronix-stats git pages."
+        echo " "
+        echo "      -h        show help"
+        echo "      -d        run in DEV MODE. Named test-profiles will only run in DEV MODE"
+        echo "      -c        clean up if test was aborted early"
         echo " "
        exit 1 ;;
   esac
