@@ -37,7 +37,7 @@ then
 
         if [ -e $PHORONIX_LOCAL_JSON ] 
         then
-            echo "${BLUE}Checking out gh-pages branch from git repository $GIT_USER/phoronix-stats ...${NC}"
+            echo -e "${BLUE}Checking out gh-pages branch from git repository $GIT_USER/phoronix-stats ...${NC}"
             if [ -d $TEMP_GH_PAGES_DIR ]
             then
                 rm -rf $TEMP_GH_PAGES_DIR
@@ -50,20 +50,20 @@ then
             git checkout gh-pages
             cp $PHORONIX_LOCAL_JSON $TEMP_GH_PAGES_DIR/phoronix-stats
 
-            echo "${BLUE}Pushing new JSON file to gh-pages branch in $USER/phoronix-stats${NC}"
+            echo -e "${BLUE}Pushing new JSON file to gh-pages branch in $USER/phoronix-stats${NC}"
             git add $JSON_FILE
             git commit -m "latest test run"
             git push 
 
             rm -rf $TEMP_GH_PAGES_DIR
         else    
-            echo "${RED}Test Failed. Unable to locate $JSON_FILE${NC}"
+            echo -e "${RED}Test Failed. Unable to locate $JSON_FILE${NC}"
         fi
         
     else
-        echo "${RED}Unable to pull latest - .git folder does not exist in $PHORONIX_ROOT ${NC}"
+        echo -e "${RED}Unable to pull latest - .git folder does not exist in $PHORONIX_ROOT ${NC}"
     fi
 else
-    echo "${RED}$PHORONIX_ROOT not found${NC}"
+    echo -e "${RED}$PHORONIX_ROOT not found${NC}"
 fi
     
