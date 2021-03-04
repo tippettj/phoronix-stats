@@ -13,7 +13,8 @@ PHORONIX_LOCAL_JSON=$HOME/.phoronix-test-suite/openbenchmarking.org/$JSON_FILE
 # directory where the client reads the json results
 RESULTS_DEST=$PHORONIX_STATS_ROOT/public 
 
-BLUE='\033[0;31m'
+BLUE='\033[0;34m'
+RED='\033[33;31m'
 NC='\033[0m' # No Color
 
 if [ -d $PHORONIX_ROOT ]
@@ -28,16 +29,20 @@ then
         if [ -e $PHORONIX_LOCAL_JSON ] 
         then
             rm $PHORONIX_LOCAL_JSON.*
-            echo $PHORONIX_LOCAL_JSON $PHORONIX_LOCAL_JSON.`(date +%F)`
             cp $PHORONIX_LOCAL_JSON $PHORONIX_LOCAL_JSON.`(date +%F)`
         fi
 
-        echo "Running check-tests ..."
+        echo -e "${BLUE}Running check-tests ...${NC}"
         #./phoronix-test-suite check-tests
 
         if [ -e $PHORONIX_LOCAL_JSON ] 
         then
-            echo "Checking out gh-pages branch from git repository $GIT_USER/phoronix-stats ..."
+            echo "${BLUE}Checking out gh-pages branch from git repository $GIT_USER/phoronix-stats ...${NC}"
+            if [ -d $TEMP_GH_PAGES_DIR ]
+            then
+                rm -rf $TEMP_GH_PAGES_DIR
+            fi
+
             mkdir -p $TEMP_GH_PAGES_DIR
             cd $TEMP_GH_PAGES_DIR
             git clone git@github.com:$GIT_USER/phoronix-stats.git
@@ -45,21 +50,20 @@ then
             git checkout gh-pages
             cp $PHORONIX_LOCAL_JSON $TEMP_GH_PAGES_DIR/phoronix-stats
 
-            echo "Pushing new JSON file to gh-pages branch in $USER/phoronix-stats"
-            # git add $JSON_FILE
-            # git commit -m "latest test run"
-            # git push 
+            echo "${BLUE}Pushing new JSON file to gh-pages branch in $USER/phoronix-stats${NC}"
+            git add $JSON_FILE
+            git commit -m "latest test run"
+            git push 
 
-            # cd
-            # rm -rf $TEMP_GH_PAGES_DIR
+            rm -rf $TEMP_GH_PAGES_DIR
         else    
-            echo "Test Failed. Unable to locate $JSON_FILE"
+            echo "${RED}Test Failed. Unable to locate $JSON_FILE${NC}"
         fi
         
     else
-        echo "Unable to pull latest - .git folder does not exist in $PHORONIX_ROOT"
+        echo "${RED}Unable to pull latest - .git folder does not exist in $PHORONIX_ROOT ${NC}"
     fi
 else
-    echo "$PHORONIX_ROOT not found"
+    echo "${RED}$PHORONIX_ROOT not found${NC}"
 fi
     
