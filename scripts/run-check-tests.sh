@@ -54,24 +54,33 @@ while getopts 'dhcs:' flag; do
     s) ${DEV_RUNTIME}=${OPTARG} ;;
     c) cleanUp ;;
     h) 
-        echo "run-check-tests"
-        echo "Runs the Phoronix Test Suite check-tests command, generating a JSON file."
-        echo "JSON file is checked into git phoronix-stats repository for display in phoronix-stat git pages."
         echo " "
         echo "run-check-tests [options] test-profiles"
         echo " "
+        echo "Runs the Phoronix Test Suite check-tests command, generating a JSON file."
+        echo "JSON file is checked into git phoronix-stats repository for display in phoronix-stats git pages."
+        echo " "
         echo "options:"
         echo "-h,        Show help"
-        echo "-d,        Run in DEV MODE"
+        echo "-d,        Run in DEV MODE. Named test-profiles will only run in DEV MODE"
         echo "-c         Clean up if test was aborted early"
+        echo " "
        exit 1 ;;
   esac
 done
-  # Any remaining args are specific test-profiles to run
-  echo $* 
-  shift $((OPTIND -1))
-  echo $*
-  $_profiles=$*
+# Any remaining args are specific test-profiles to run
+echo $* 
+shift $((OPTIND -1))
+echo $*
+$_profiles=$*
+  
+if [ "${DEV_MODE}" = "true"  ]
+then
+    if [ $_profiles = ""]
+    then
+        echo -e "${RED}DEV MODE must have named profiles. Using default profiles pts/blake2-1.2.1 pts/askap-1.0.0"
+        $_profiles="pts/blake2-1.2.1 pts/askap-1.0.0"
+fi
 
 if [ -d ${PHORONIX_ROOT} ]
 then
