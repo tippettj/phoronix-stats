@@ -18,7 +18,6 @@ RESULTS_DEST=${PHORONIX_STATS_ROOT}/public
 BLUE='\033[1;36m'
 RED='\033[1;31m'
 NC='\033[0m' # No Color
-NCB='\033[1m' # No Color Bold
 
 
 DEV_MODE="false"
@@ -52,12 +51,12 @@ cleanUp() {
 #  Read any arguments
 while getopts 'dhcs:' flag; do
   case "${flag}" in
-    d) ${DEV_MODE}="true" ;;
-    s) ${DEV_RUNTIME}=${OPTARG} ;;
+    d) $DEV_MODE="true" ;;
+    s) $DEV_RUNTIME=${OPTARG} ;;
     c) cleanUp ;;
     h) 
         echo " "
-        echo "${NCB}NAME"
+        echo "NAME"
         echo "      run-check-tests - runs the Phoronix Test Suite check-tests command"
         echo " "
         echo "SYNOPSIS"
@@ -79,7 +78,7 @@ shift $((OPTIND -1))
 echo $*
 $_profiles=$*
   
-if [ "${DEV_MODE}" = "true"  ]
+if [ "$DEV_MODE" = "true"  ]
 then
     if [ $_profiles = ""]
     then
@@ -103,7 +102,7 @@ then
         fi
 
         echo -e "${BLUE}Running check-tests ...${NC}"
-        if [ "${DEV_MODE}" = "true"  ]
+        if [ "$DEV_MODE" = "true"  ]
         then
             echo -e "${RED}In DEV MODE ...${NC}"
             ./phoronix-test-suite $_profiles
