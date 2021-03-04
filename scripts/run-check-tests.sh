@@ -13,12 +13,15 @@ PHORONIX_LOCAL_JSON=$HOME/.phoronix-test-suite/openbenchmarking.org/$JSON_FILE
 # directory where the client reads the json results
 RESULTS_DEST=$PHORONIX_STATS_ROOT/public 
 
+BLUE='\033[0;31m'
+NC='\033[0m' # No Color
+
 if [ -d $PHORONIX_ROOT ]
 then
     if [ -d $PHORONIX_ROOT/.git ] 
     then
         cd $PHORONIX_ROOT
-        echo "Pulling latest changes from $GIT_USER/phoronix-test-suite..."
+        echo -e "${BLUE}Pulling latest changes from $GIT_USER/phoronix-test-suite...${NC}"
         git pull
 
         # Back up last json file
