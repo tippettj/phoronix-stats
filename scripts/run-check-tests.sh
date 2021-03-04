@@ -27,9 +27,6 @@ cleanUp() {
     then
         rm -rf $TEMP_GH_PAGES_DIR
     fi
-
-
-
 }
 
 #  Read any arguments
@@ -43,16 +40,19 @@ while getopts 'dhcs:' flag; do
         echo "Runs the Phoronix Test Suite check-tests command, generating a JSON file."
         echo "JSON file is checked into git phoronix-stats repository for display in phoronix-stat git pages."
         echo " "
-        echo "run-check-tests [options]"
+        echo "run-check-tests [options] test-names"
         echo " "
         echo "options:"
         echo "-h,        Show help"
         echo "-d,        Run in DEV MODE"
         echo "-c         Clean up if test was aborted early"
-        echo "-s=secs    Allows fast mode to test run-check-tests.sh. Use in DEV_MODE only."
+        #echo "-t=tests    Allows fast mode to test run-check-tests.sh. Use in DEV_MODE only."
        exit 1 ;;
   esac
 done
+  echo $* 
+  shift $((OPTIND -1))
+  echo $*
 
 if [ -d $PHORONIX_ROOT ]
 then
@@ -74,13 +74,7 @@ then
         if [ DEV_MODE ]
         then
             echo -e "${RED}In DEV MODE ... Will kill check-tests test in ${DEV_RUNTIME} secs. This will not produce a complete JSON file.${NC}"
-            ./phoronix-test-suite check-tests &
-            _pid=`echo $!`
-            echo -e "Parent id: ${_pid}"
-            sleep $DEV_RUNTIME
-            # Kill all process in the pts commands Process Group
-            kill -- -${_pid}
-            cleanUp
+            ./phoronix-test-suite check-tests pts/mkl-dnn-1.2.0  pts/minion-1.4.0
         else
             ./phoronix-test-suite check-tests
         fi
