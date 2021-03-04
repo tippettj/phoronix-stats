@@ -31,10 +31,11 @@ cleanUp() {
     then
         rm -rf ${TEMP_GH_PAGES_DIR}
     fi
-
+ 
     # if this file exists the next test will used these cached results
     if [ -e ${PHORONIX_LOCAL}/check-tests-tested.txt ]
     then
+        echo -e "Removing cached tests ..."
         #rm ${PHORONIX_LOCAL}/check-tests-tested.txt
     fi
 
