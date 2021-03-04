@@ -18,23 +18,37 @@ RED='\033[1;31m'
 NC='\033[0m' # No Color
 
 DEV_MODE=false;
-DEV_RUNTIME=120;
+DEV_RUNTIME=12;
+
+cleanUp() {
+    #Group id command --> ps x -o  "%p %r %y %x %c "
+    echo "cleaning up"
+    if [ -d $TEMP_GH_PAGES_DIR ]
+    then
+        rm -rf $TEMP_GH_PAGES_DIR
+    fi
+
+
+
+}
 
 #  Read any arguments
-while getopts 'dhs:' flag; do
+while getopts 'dhcs:' flag; do
   case "${flag}" in
     d) DEVMODE='true';;
     s) DEV_RUNTIME=${OPTARG} ;;
-    h) print_usage
-        echo "$package"
+    c) cleanUp ;;
+    h) 
+        echo run-check-tests
         echo "Runs the Phoronix Test Suite check-tests command, generating a JSON file."
-        echo "JSON file is checked into git phoronix-stats repository for display in git pages."
+        echo "JSON file is checked into git phoronix-stats repository for display in phoronix-stat git pages."
         echo " "
-        echo "$package [options]"
+        echo "run-check-tests [options]"
         echo " "
         echo "options:"
         echo "-h,        Show help"
         echo "-d,        Run in DEV MODE"
+        echo "-c         Clean up if test was aborted early"
         echo "-s=secs    Allows fast mode to test run-check-tests.sh. Use in DEV_MODE only."
        exit 1 ;;
   esac
@@ -59,12 +73,14 @@ then
 
         if [ DEV_MODE ]
         then
-            echo -e "${RED}In DEV MODE ... Will kill check-tests test in ${DEV_RUNTIME} secs ${NC}. This will not produce a complete JSON file."
+            echo -e "${RED}In DEV MODE ... Will kill check-tests test in ${DEV_RUNTIME} secs. This will not produce a complete JSON file.${NC}"
             ./phoronix-test-suite check-tests &
             _pid=`echo $!`
+            echo -e "Parent id: ${_pid}"
             sleep $DEV_RUNTIME
             # Kill all process in the pts commands Process Group
             kill -- -${_pid}
+            cleanUp
         else
             ./phoronix-test-suite check-tests
         fi
