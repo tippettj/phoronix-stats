@@ -75,7 +75,6 @@ while getopts 'dhcs:' flag; do
   esac
 done
 # Any remaining args are specific test-profiles to run
-echo $* 
 shift $((OPTIND -1))
 echo $*
 $_profiles=$*
