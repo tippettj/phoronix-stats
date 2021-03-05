@@ -15,7 +15,7 @@ PHORONIX_LOCAL_JSON=${PHORONIX_LOCAL}/${JSON_FILE}
 # directory where the client reads the json results
 RESULTS_DEST=${PHORONIX_STATS_ROOT}/public 
 
-BLUE='\033[1;36m'
+CYAN='\033[1;36m'
 RED='\033[1;31m'
 NC='\033[0m' # No Color
 
@@ -26,7 +26,7 @@ trap cleanUp EXIT
 
 cleanUp() { 
     #Group id command for deleting all check-tests processes --> ps x -o  "%p %r %y %x %c "
-    echo -e "${BLUE}Cleaning up ... "
+    echo -e "${CYAN}Cleaning up ... "
 
     # remove the temporary github pages
     if [ -d ${TEMP_GH_PAGES_DIR} ]
@@ -34,11 +34,11 @@ cleanUp() {
         rm -rf ${TEMP_GH_PAGES_DIR}
     fi
  
-    # if this file exists the next test will used these cached results
+    # if this file exists the next test will used these cached results 
     if [ -e ${PHORONIX_LOCAL}/check-tests-tested.txt ]
     then
-        echo -e "Removing cached tests ..."
-        #PROD - rm ${PHORONIX_LOCAL}/check-tests-tested.txt
+        echo -e "Removing cached tests and temporary files ..."
+        #PROD(remove echo above also) - rm ${PHORONIX_LOCAL}/check-tests-tested.txt
     fi
 
     # any files with the format xxx.json.1234 are files left over from cancelled processes
@@ -99,7 +99,7 @@ if [ -d ${PHORONIX_ROOT} ]
 then
     if [ -d ${PHORONIX_ROOT}/.git ] 
     then
-        echo -e "${BLUE}Pulling latest changes from git repository ${GIT_USER}/phoronix-test-suite...${NC}"
+        echo -e "${CYAN}Pulling latest changes from git repository ${GIT_USER}/phoronix-test-suite...${NC}"
         cd ${PHORONIX_ROOT}
         git pull
 
@@ -110,10 +110,10 @@ then
             cp ${PHORONIX_LOCAL_JSON} ${PHORONIX_LOCAL_JSON}.`(date +%F)`
         fi
 
-        echo -e "${BLUE}Running check-tests ...${NC}"
+        echo -e "${CYAN}Running check-tests ...${NC}"
         if [ "$DEV_MODE" = "true"  ]
         then
-            echo -e "${RED}In DEV MODE ... Running check-tests with $_profiles${NC}"
+            echo -e "${CYAN}In DEV MODE ... Running check-tests with $_profiles${NC}"
             ./phoronix-test-suite check-tests $_profiles
         else
             ./phoronix-test-suite check-tests
@@ -122,7 +122,7 @@ then
         # if we have sucessfully created a JSON results file, push it to github
         if [ -e ${PHORONIX_LOCAL_JSON} ] 
         then
-            echo -e "${BLUE}Checking out gh-pages branch from git repository ${GIT_USER}phoronix-stats ...${NC}"
+            echo -e "${CYAN}Checking out gh-pages branch from git repository ${GIT_USER}phoronix-stats ...${NC}"
             if [ -d ${TEMP_GH_PAGES_DIR} ]
             then
                 rm -rf ${TEMP_GH_PAGES_DIR}
@@ -135,7 +135,7 @@ then
             git checkout gh-pages
             cp ${PHORONIX_LOCAL_JSON} ${TEMP_GH_PAGES_DIR}/phoronix-stats
 
-            echo -e "${BLUE}Pushing new JSON file to gh-pages branch in ${GIT_USER}/phoronix-stats${NC}"
+            echo -e "${CYAN}Pushing new JSON file to gh-pages branch in ${GIT_USER}/phoronix-stats${NC}"
             git add ${JSON_FILE}
             git commit -m "Automated check-tests run on `(date +%F)`"
             git push 
