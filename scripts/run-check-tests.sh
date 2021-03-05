@@ -41,17 +41,19 @@ cleanUp() {
     fi
 
     # any files with the format xxx.json.1234 are files left over from cancelled processes
-    if [ -e ${PHORONIX_LOCAL}/*.json.* ]
+    if [ `ls -1 ${PHORONIX_LOCAL}/*.json.* 2>/dev/null | wc -l ` -gt 0 ];
     then
         rm ${PHORONIX_LOCAL}/*.json.*
     fi
+
+    exit 1;
 
 }
 
 #  Read any arguments
 while getopts 'dhcs:' flag; do
   case "${flag}" in
-    d) "${DEV_MODE}"="true" ;;
+    d) "DEV_MODE"="true" ;;
     s) $DEV_RUNTIME=${OPTARG} ;;
     c) cleanUp ;;
     h) 
@@ -76,14 +78,15 @@ done
 # Any remaining args are specific test-profiles to run
 shift $((OPTIND -1))
 echo $*
-$_profiles=$*
+_profiles=$*
   
 if [ "$DEV_MODE" = "true"  ]
 then
     if [ $_profiles = ""]
     then
-        echo -e "${RED}DEV MODE must have named profiles. Using default profiles pts/blake2-1.2.1 pts/askap-1.0.0"
-        $_profiles="pts/blake2-1.2.1 pts/askap-1.0.0"
+        echo -e "${RED}DEV MODE must have named profiles. Using default profiles pts/blake2-1.2.1 pts/askap-1.0.0${NC}"
+        _profiles="pts/blake2-1.2.1 pts/askap-1.0.0"
+    fi
 fi
 
 if [ -d ${PHORONIX_ROOT} ]
@@ -104,8 +107,8 @@ then
         echo -e "${BLUE}Running check-tests ...${NC}"
         if [ "$DEV_MODE" = "true"  ]
         then
-            echo -e "${RED}In DEV MODE ...${NC}"
-            ./phoronix-test-suite $_profiles
+            echo -e "${RED}In DEV MODE ... Running check-tests with $_profiles${NC}"
+            ./phoronix-test-suite check-tests $_profiles
         else
             ./phoronix-test-suite check-tests
         fi
