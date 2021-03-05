@@ -19,9 +19,10 @@ BLUE='\033[1;36m'
 RED='\033[1;31m'
 NC='\033[0m' # No Color
 
-
 DEV_MODE="false"
-DEV_RUNTIME=12
+
+# clean up at end of execution or if there is an interrupt
+trap cleanUp EXIT
 
 cleanUp() { 
     #Group id command for deleting all check-tests processes --> ps x -o  "%p %r %y %x %c "
@@ -37,13 +38,19 @@ cleanUp() {
     if [ -e ${PHORONIX_LOCAL}/check-tests-tested.txt ]
     then
         echo -e "Removing cached tests ..."
-        #rm ${PHORONIX_LOCAL}/check-tests-tested.txt
+        #PROD - rm ${PHORONIX_LOCAL}/check-tests-tested.txt
     fi
 
     # any files with the format xxx.json.1234 are files left over from cancelled processes
     if [ `ls -1 ${PHORONIX_LOCAL}/*.json.* 2>/dev/null | wc -l ` -gt 0 ];
     then
         rm ${PHORONIX_LOCAL}/*.json.*
+    fi
+
+    # remove any downloaded files
+    if [ -d ${PHORONIX_LOCAL}/checkTestsDownloads ]
+    then
+        rm -rf ${PHORONIX_LOCAL}/checkTestsDownloads
     fi
 
     exit 1;
@@ -54,7 +61,6 @@ cleanUp() {
 while getopts 'dhcs:' flag; do
   case "${flag}" in
     d) DEV_MODE="true" ;;
-    s) $DEV_RUNTIME=${OPTARG} ;;
     c) cleanUp ;;
     h) 
         echo " "
@@ -145,6 +151,4 @@ then
 else
     echo -e "${RED}${PHORONIX_ROOT} not found${NC}"
 fi
-
-trap cleanUp EXIT
     
