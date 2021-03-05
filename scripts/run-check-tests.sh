@@ -72,11 +72,11 @@ while getopts 'dhcs:' flag; do
         echo " "
         echo "DESCRIPTION"
         echo "      Runs the Phoronix Test Suite check-tests command, generating a JSON file."
-        echo "      JSON file is checked into git phoronix-stats repository for display in phoronix-stats git pages."
+        echo "      JSON file is checked into git phoronix-stats repository for display in phoronix-stats github pages."
         echo " "
         echo "      -h        show help"
         echo "      -d        run in DEV MODE. Named test-profiles will only run in DEV MODE"
-        echo "      -c        clean up if test was aborted early"
+        echo "      -c        clean up"
         echo " "
        exit 1 ;;
   esac
@@ -88,7 +88,7 @@ _profiles=$*
   
 if [ "$DEV_MODE" = "true"  ]
 then
-    if [ $_profiles = ""]
+    if [ "$_profiles" = "" ]
     then
         echo -e "${RED}DEV MODE must have named profiles. Using default profiles pts/blake2-1.2.1 pts/askap-1.0.0${NC}"
         _profiles="pts/blake2-1.2.1 pts/askap-1.0.0"
