@@ -104,11 +104,11 @@ then
         git pull
 
         # Back up last json file
-        if [ -e ${PHORONIX_LOCAL_JSON} ] 
-        then
-            rm ${PHORONIX_LOCAL_JSON}.*
-            cp ${PHORONIX_LOCAL_JSON} ${PHORONIX_LOCAL_JSON}.`(date +%F)`
-        fi
+        # if [ -e ${PHORONIX_LOCAL_JSON} ] 
+        # then
+        #     rm ${PHORONIX_LOCAL_JSON}.*
+        #     cp ${PHORONIX_LOCAL_JSON} ${PHORONIX_LOCAL_JSON}`(date +%F)`
+        # fi
 
         echo -e "${CYAN}Running check-tests ...${NC}"
         if [ "$DEV_MODE" = "true"  ]
