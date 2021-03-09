@@ -6,6 +6,8 @@ export const SHA256 = "SHA256 Fails"
 export const REDIRECT = "Redirects"
 export const NOT_TESTED = "Not Tested"
 export const TIMED_OUT = "Timed Out"
+export const LATEST = "Latest Version"
+
 
 
 
