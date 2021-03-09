@@ -23,10 +23,12 @@ export const theme = createMuiTheme({
             secondary: "#424242",
         },
         grey: {
-            100 : "#d6dada",
+            // 100 : "#d6dada",
+            100 : "#fafbfb",
+
         },
         background: {
-            textfield : "d6dada",
+            textfield : "fafbfb",
         },
 
     },
