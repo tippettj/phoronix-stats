@@ -24,7 +24,7 @@ import * as Constants from '../Constants';
 import {theme} from './theme';
 import "./styles.css";
 import useStyles from "./styles";
-import {getNotTestedData, getRedirectData, getSearchData, getFailedData, getTimedOutData} from '../processData';
+import {getNotTestedData, getRedirectData, getSearchData, getFailedData, getTimedOutData, getLatestVersion} from '../processData';
 
 
 export function FilterForm(props) {
@@ -78,6 +78,9 @@ export function FilterForm(props) {
         if (filters.includes(Constants.ALL)) 
             results = data;
 
+        if (filters.includes(Constants.LATEST))
+            results = getLatestVersion(data);
+
         if (filters.includes(Constants.FAILED) || filters.includes(Constants.MD5) || filters.includes(Constants.SHA256)) 
             results = getFailedData(data, filters);
     
@@ -108,6 +111,10 @@ export function FilterForm(props) {
                                             <Typography
                                                 variant="h2"
                                             >Check Tests Results
+                                            </Typography>
+                                            <Typography
+                                                variant="h4"
+                                            >A visual tool to display the current state of test profiles.
                                             </Typography>
                                         </Grid>
                                         <Grid item>
