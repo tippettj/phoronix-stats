@@ -30,7 +30,7 @@ function App() {
   },[])
 
   return (
-    <div >
+    <div className={classes.root}>
       {loading ? <LinearProgress  className={classes.progressBar}/> : <FilterForm data={data}/> } 
     </div>
   );
