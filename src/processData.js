@@ -1,5 +1,7 @@
 import * as Constants from './Constants';
 
+const semver= require('semver'); // semantic versioner
+
 
 /**
  * Determines if the test has failed. 
@@ -135,7 +137,7 @@ function getFailedData(data, searchFilters = null) {
   } 
 }
 
-  /**
+/**
  * When the user selects the Failed Checkbox, function returns records that satusfy the failed criteria
  * @param {*} fData The mirror array containing the failed data
  * @param {*} searchFilters The filters to apply for one or more specific failures ie md5
@@ -159,5 +161,57 @@ function getSpecificFailures(fData, searchFilters) {
     return failedData;
 }
 
-export {getNotTestedData, getRedirectData, getSearchData, getFailedData, notTestedPackage, hasFailedStatus, timedOutPackage, getTimedOutData}
+/**
+ * Splits the profile name into the test profile name
+ * @param {*} profileName   profile name such as pts/apache-1.2.1
+ * @return {name, version}  {pts/apache, 1.2.1}
+ */
+function getProfileNameAndVersion(profileName) {
+    const vpattern = /-\d.*/g;
+    const npattern = /.*-/g;
+
+    let matched = profileName.match(npattern)[0];  //match returns array
+    let name = matched.slice(0, matched.length-1);
+    matched = profileName.match(vpattern)[0];
+    let version = matched.slice(1);
+
+    return {profileName, name, version};
+}
+
+/**
+ * Returns the latest version of each test profile
+ * @param {*} data All test profiles
+ * @return array [{profileName, name, version}] {pts/apache-1.2.1, pts/apache, 1.2.1} latest version of each profile 
+ */
+function getLatestVersion(data) {
+    let profiles = [];
+
+    if (data && data.length>0 ) {
+        data.forEach((profile) => {
+            let profileName = profile['profile-name'];
+            let profileDetails = getProfileNameAndVersion(profileName);
+            profile.version=profileDetails.version;
+            profile.name=profileDetails.name;
+
+            // Get the index of the profile name
+            let idx = profiles.findIndex((curr) => curr.name === profileDetails.name);
+
+            // If the profile name d.n.e add it to the latest list
+            if (idx === -1) {    
+                profile.versions = [profile.version];
+                profiles.push(profile);
+            } else {
+                // If the profile does exist, store the lastest version
+                if (semver.gt(profileDetails.version, profiles[idx].version)) {
+                    profile.versions = [...profiles[idx].versions, profile.version];
+                    profiles[idx] = profile;
+                } 
+            }
+         })
+    }
+    return profiles;
+}
+
+
+export {getNotTestedData, getRedirectData, getSearchData, getFailedData, notTestedPackage, hasFailedStatus, timedOutPackage, getTimedOutData, getLatestVersion}
 
