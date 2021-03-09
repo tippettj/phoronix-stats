@@ -1,12 +1,16 @@
 import { makeStyles } from '@material-ui/core/styles';
+import { theme } from './theme';
 
-export const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles(() => ({
    
     // Container
     root: {
       // flexGrow: 1,
       // alignItems: "center",
       // justifyContent: "center",
+     // background: "#fbfffc",
+      background: "#fbfffc",
+      marginBottom: "3em",
     },
 
     progressBar: {
@@ -17,10 +21,12 @@ export const useStyles = makeStyles((theme) => ({
 
     // Clear Button
     button: {
-        background: 'linear-gradient(45deg, #285F80 29%, #333333 81% )',
+        //background: 'linear-gradient(45deg, #285F80 29%, #333333 81% )',
+        background: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
+        fontWeight: theme.typography.fontWeightBold,
         border: 0,
-        borderRadius: 15,
-        color: '#FFFFFF', // white
+        borderRadius: theme.shape.borderRadius,
         padding: '5px 30px',
         // marginRight: '20px',
         fontSize: 12,
@@ -29,7 +35,7 @@ export const useStyles = makeStyles((theme) => ({
     
     toolbar: {
       //background: 'linear-gradient(45deg, #285F80 29%, rgba(51,51,51,95) 91% )',
-      background: "#285F80",
+      background: theme.palette.primary.main,
       padding: '1em',
     },
 
@@ -40,10 +46,22 @@ export const useStyles = makeStyles((theme) => ({
         // borderStyle: "solid", 
     },
 
+    // checkboxes tool tip
+    checkboxTip: {
+      // backgroundColor: theme.palette.common.white,
+      color: theme.palette.common.black,
+      fontSize: "48!important",
+    },
     // Rows containing the profile Name
     profileNameRow: {
+      backgroundColor: theme.palette.grey[200],
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.grey[100],
+      },
       //backgroundColor: "#CCD1D1", //light grey
-      backgroundImage: 'linear-gradient(90deg, rgba(227,224,224, 5) 0%, rgba(126,159,178,1) 98%)',
+      //backgroundColor: "rgba(227,224,224, 5)", //light grey
+      //backgroundColor: "#FFFFFF", //light grey
+      //backgroundImage: 'linear-gradient(90deg, rgba(227,224,224, 5) 0%, rgba(126,159,178,1) 98%)',
     },
 
     // Profile Name titles
@@ -72,22 +90,26 @@ export const useStyles = makeStyles((theme) => ({
 
     // Rows containing package Names Details FileName/FileSize
     packageNameRow: {
-      backgroundColor: "#d6dada",  
+      //backgroundColor: "#d6dada",  
+      backgroundColor: theme.palette.grey[100],
+
     },
 
     // Rows containing mirror details ie Status/Duplicate/Failures
     mirrorRow: {
-      backgroundColor: "#d6dada",
+      //backgroundColor: "#d6dada",
+      backgroundColor: theme.palette.grey[100],
     },
 
     // Rows containing failure details ie MD5/SHA246
     failureRow: {
-      backgroundColor: "#d6dada",
+      //backgroundColor: "#d6dada",
+      backgroundColor: theme.palette.grey[100],
     },
 
     // Heading throughout Table, usually keys in JSON File
     heading: {
-         color: "#000000", //black
+         color: theme.palette.text.primary, //black
          fontWeight:theme.typography.fontWeightMedium,
          marginLeft: "3em"
     },
@@ -117,20 +139,21 @@ export const useStyles = makeStyles((theme) => ({
 
     // Headings for the mirror data. Usually keys like Status/Duplicate/Failures
     mirrorDataHeading: {
-      color: "#000000", //black
+      color: theme.palette.text.primary, //black
       fontWeight:theme.typography.fontWeightMedium,
       width: "130px",
     },
 
     // Headings for the failures
     failureHeading: {
-      color: "#000000", //black
+      color: theme.palette.text.primary, //black
       fontWeight:theme.typography.fontWeightMedium,
  },
     //TextField details
     searchField: {
       //backgroundColor: "#d7d8da", // a bit darker then #d3d5d8
-      backgroundColor: "#d3d5d8",
+      //backgroundColor: "#d3d5d8",
+      backgroundColor: theme.palette.background.textfield,
       marginTop:"0.5em",
     },
 
@@ -138,7 +161,7 @@ export const useStyles = makeStyles((theme) => ({
     checkboxes: {
       '&:hover': {
         backgroundColor: "transparent"
-      },  
+      }, 
     },
     
   }));
