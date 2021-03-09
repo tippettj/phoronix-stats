@@ -5,10 +5,6 @@ export const useStyles = makeStyles(() => ({
    
     // Container
     root: {
-      // flexGrow: 1,
-      // alignItems: "center",
-      // justifyContent: "center",
-     // background: "#fbfffc",
       background: "#fbfffc",
       marginBottom: "3em",
     },
@@ -28,7 +24,6 @@ export const useStyles = makeStyles(() => ({
         border: 0,
         borderRadius: theme.shape.borderRadius,
         padding: '5px 30px',
-        // marginRight: '20px',
         fontSize: 12,
         marginTop: "0.5em"
     },
@@ -163,6 +158,10 @@ export const useStyles = makeStyles(() => ({
         backgroundColor: "transparent"
       }, 
     },
+
+    helpIcon: {
+      color: theme.palette.warning.dark,
+    }
     
   }));
 

@@ -5,10 +5,14 @@ import Box from '@material-ui/core/Box';
 import HelpIcon from '@material-ui/icons/Help';
 import IconButton from '@material-ui/core/IconButton';
 import {theme} from './theme';
+import useStyles from "./styles";
+
 
 
 export default function PTSHelp() {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const classes = useStyles();                        
+
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -23,7 +27,8 @@ export default function PTSHelp() {
 
   return (
     <>
-        <IconButton aria-describedby={id} style={{color:"white"}}  onClick={handleClick}>
+        {/* <IconButton aria-describedby={id} style={{color:"white"}}  onClick={handleClick}> */}
+        <IconButton aria-describedby={id} className={classes.helpIcon}  onClick={handleClick}>
             <HelpIcon/>
         </IconButton>
         
