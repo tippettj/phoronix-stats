@@ -117,16 +117,15 @@ const getSearchData = (data, value) => {
  */
 function getFailedData(data, searchFilters = null) {
     let testProfile = null;
-
     if (data && data.length>0 ) {
       testProfile = data.filter((profile) => {
           return profile.packages.some((packs) => {
             return packs.mirror.some(mirror => {
                if (mirror.status === Constants.JSON_FAILED) {
-                   if (!searchFilters) 
-                        return true;
-                    else 
+                   if (searchFilters.includes(Constants.MD5.name) || searchFilters.includes(Constants.SHA.name)) {
                        return getSpecificFailures( mirror, searchFilters);
+                   } else 
+                      return true;
                 } else { 
                     return false;
                 }
@@ -138,7 +137,7 @@ function getFailedData(data, searchFilters = null) {
 }
 
 /**
- * When the user selects the Failed Checkbox, function returns records that satusfy the failed criteria
+ * When the user selects the Failed Checkbox, function returns records that satisfy the failed criteria
  * @param {*} fData The mirror array containing the failed data
  * @param {*} searchFilters The filters to apply for one or more specific failures ie md5
  * @returns boolean true if a match fitting the search criteria has been found
@@ -149,13 +148,13 @@ function getSpecificFailures(fData, searchFilters) {
 
     // if only the Failed Checkbox has been selected then return all records that failed, otherwise return
     // only those failed records that match the selected checkboxes. ie md5 or sha256
-    if (searchFilters.length === 1 && searchFilters.includes(Constants.FAILED) ) 
+    if (searchFilters.length === 1 && searchFilters.includes(Constants.FAILED.name) ) 
         failedData = (fData.status === Constants.JSON_FAILED);
-    else if (searchFilters.includes(Constants.MD5) && searchFilters.includes(Constants.SHA256))
+    else if (searchFilters.includes(Constants.MD5.name) && searchFilters.includes(Constants.SHA.name))
         failedData = (data.md5 !== undefined || data.sha256 !== undefined)
-    else if (searchFilters.includes(Constants.MD5) && !searchFilters.includes(Constants.SHA256))
+    else if (searchFilters.includes(Constants.MD5.name) && !searchFilters.includes(Constants.SHA.name))
         failedData = (data.md5 !== undefined )
-    else if (searchFilters.includes(Constants.SHA256) && !searchFilters.includes(Constants.MD5)) 
+    else if (searchFilters.includes(Constants.SHA.name) && !searchFilters.includes(Constants.MD5.name)) 
         failedData= (data.sha256 !== undefined)
 
     return failedData;

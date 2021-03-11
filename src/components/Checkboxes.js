@@ -6,28 +6,33 @@ import { FormControlLabel } from '@material-ui/core';
 
 import * as Constants from "../Constants";
 import useStyles from "./styles";
-import { Toolbar } from '@material-ui/core/Toolbar';
 
 // List of checkboxes that can be applied to the JSON data to extract results
 const checkboxList = [
-    {name: Constants.ALL, checked: false, desc: "Displays all tests profiles"}, 
-    {name: Constants.LATEST, checked: true, desc: "Displays latest version of each test profile"},
-    {name: Constants.FAILED, checked: false, desc: "Displays test profiles that failed any test criteria"},
-    {name: Constants.MD5, checked: false, desc: "Displays test profiles with failed MD5 checksum"},
-    {name: Constants.SHA256, checked: false, desc: "Displays test profiles with failed SHA256 checksum"},
-    {name: Constants.REDIRECT, checked: false, desc: "Displays test profiles which resulted in a 301 or 302 redirect"}, 
-    {name: Constants.NOT_TESTED, checked: false, desc: "Displays test profiles which were not downloaded and tested"},
-    {name: Constants.TIMED_OUT, checked: false, desc: "Displays test profiles that timeout during download and were not tested"}  
+  {filter: Constants.ALL}, 
+  {filter: Constants.LATEST},
+  {filter: Constants.FAILED},
+  {filter: Constants.MD5},
+  {filter: Constants.SHA},
+  {filter: Constants.REDIRECTS}, 
+  {filter: Constants.NOT_TESTED},
+  {filter: Constants.TIMED_OUT}  
 ];
 
 // Takes the filter list and sets default properties to create checkboxes
 const getDefaultCheckboxes = () =>
-  checkboxList.map((box, idx) => ({
-    name: box.name,
-    checked: box.checked,
-    desc: box.desc,
-    idx,
-}));
+  checkboxList.map((box, index) => { 
+    const {idx, name, checked, desc, disabled} = box.filter;
+    return ({
+      idx, 
+      name,
+      checked,
+      desc,
+      disabled,
+      children: ("children" in box.filter) ? box.filter.children : [99],
+      hide: ("hide" in box.filter) ? box.filter.hide : [],
+      competes: ("competes" in box.filter) ? box.filter.competes : [],
+})});
 
 /**
  * Determines the state of the various checkboxes defined in the filterList.
@@ -40,6 +45,39 @@ export function useCheckboxes(defaultCheckboxes) {
     defaultCheckboxes || getDefaultCheckboxes(),
   );
 
+  function displaySelection(index, checked, curr) {
+      let currBox = checkboxes[index];
+      currBox.checked = checked;
+
+      checkboxes.map(box => {
+        // if the current selection competes with any other checkbox then turn it off.
+        // ie Latest Version and All Tests conflict
+        if ( currBox.idx !== box.idx ) {
+          if (currBox.checked && "competes" in box) {
+            if (currBox.competes.includes(box.idx)) {
+               box.checked = false;
+            }
+          }
+
+          // Disable the fields that do not align with the current selection
+          if ("hide" in box) {
+            if (currBox.hide.includes(box.idx))
+              box.disabled = currBox.checked;
+          }
+        }
+
+        // if the box is a child of the current selection, match the parent state
+        // ie disable and uncheck all children (MD5 and SHA) of the parent (Fails)
+        if ("children" in box){
+          if (currBox.children.includes(box.idx)) {
+            box.disabled = !currBox.checked;
+            if (box.disabled)
+              box.checked = false;
+          }
+        }
+        return box;
+      });
+  }
 
   /**
    * Determines the logic of the checkboxes
@@ -47,49 +85,31 @@ export function useCheckboxes(defaultCheckboxes) {
    * @param checked boolean
    */ 
   function manageState(index,checked) {
-    const all = 0;
-    const latest = 1;
-    const allFailed = 2;
-    const md5Failed = 3;
-    const shaFailed = 4;
-    const redirects = 5;
-    const notTested = 6;
-    const timedOut = 7;
-
-
     // All selected -> Turn off all other filters
-    if (index === all && checked === true) {
-      checkboxes.filter( i => i.name !== Constants.ALL ? i : null ).map(t => t.checked = false);
+    if (index === Constants.ALL.idx) {
+      displaySelection(index, checked, Constants.ALL);
     }
 
-    if (index === latest) {
-      checkboxes.filter( i => i.name !== Constants.LATEST ? i : null ).map(t => t.checked = false);
+    if (index === Constants.LATEST.idx) {
+      displaySelection(index, checked, Constants.LATEST);
     }
 
-    if (index === allFailed) {
-      checkboxes.filter( i => i.name !== Constants.FAILED ? i : null ).map(t => t.checked = false);
+    if (index === Constants.FAILED.idx) {
+      displaySelection(index, checked, Constants.FAILED);
     }
 
-    if (index === redirects) {
-      checkboxes.filter( i => i.name !== Constants.REDIRECT ? i : null ).map(t => t.checked = false);
+    if (index === Constants.REDIRECTS.idx) {
+      displaySelection(index, checked, Constants.REDIRECTS);
+
     }
 
-    if (index === notTested) {
-      checkboxes.filter( i => i.name !== Constants.NOT_TESTED ? i : null ).map(t => t.checked = false);
+    if (index === Constants.NOT_TESTED.idx) {
+      displaySelection(index, checked, Constants.NOT_TESTED);
+
     }
 
-    if (index === timedOut) {
-      checkboxes.filter( i => i.name !== Constants.TIMED_OUT ? i : null ).map(t => t.checked = false);
-    }
-
-    // md5 and sha256 can be selected at the same time --> adds up to all Failures
-    if (index === md5Failed || index === shaFailed) {
-      checkboxes[all].checked = false;
-      checkboxes[latest].checked = false;
-      checkboxes[allFailed].checked = false;
-      checkboxes[redirects].checked = false;
-      checkboxes[notTested].checked = false;
-      checkboxes[timedOut].checked = false;
+    if (index === Constants.TIMED_OUT.idx) {
+      displaySelection(index, checked, Constants.TIMED_OUT);
     }
   }
 
@@ -109,46 +129,49 @@ export function useCheckboxes(defaultCheckboxes) {
 }
 
 const createCheckbox = (classes, checkboxes, setCheckbox, index) => {
-  console.log("description", checkboxes[index].desc);
   return (
     <FormControlLabel 
       control=
         {
-         <Tooltip arrow className={classes.checkboxTip} title={checkboxes[index].desc}>
+          // <Tooltip arrow enterNextDelay={2000} className={classes.checkboxTip} title={checkboxes[index].desc}>
             <Checkbox
               className={classes.checkboxes}
+              disabled={checkboxes[index].disabled}
               style={{'&:hover': {backgroundColor: "transparent"}}}
               checked={checkboxes[index].checked}
               onChange={e => {setCheckbox(checkboxes[index].idx, e.target.checked)}}
             /> 
-          </Tooltip>}
+          //  </Tooltip>
+        }
       label={checkboxes[index].name}
+      disabled={checkboxes[index].disabled}
     />
   )
 }
 
 function Checkboxes({ checkboxes, setCheckbox}) {
   const classes =useStyles();
+
   return (
     <React.Fragment>
         <Grid item xs={12} sm={3} md={2} lg={2}>
           <Grid container direction="column" >
-            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, 0)}</Grid>
-            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, 1)}</Grid>
+            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.LATEST.idx)}</Grid>
+            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.ALL.idx)}</Grid>
+            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.FAILED.idx)}</Grid>
           </Grid>
         </Grid>
         <Grid item xs={12} sm={3} md={3} lg={2}>
           <Grid container direction="column" >
-            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, 2)}</Grid>
-            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, 3)}</Grid>
-            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, 4)}</Grid>
+            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.MD5.idx)}</Grid>
+            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.SHA.idx)}</Grid>
           </Grid>
         </Grid>
         <Grid item xs={12} sm={3} md={3} lg={2}>
           <Grid container direction="column" >
-            <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, 5)}</Grid>
-            <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, 6)}</Grid>
-            <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, 7)}</Grid>
+            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.REDIRECTS.idx)}</Grid>
+            <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.NOT_TESTED.idx)}</Grid>
+            <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.TIMED_OUT.idx)}</Grid>
           </Grid>
         </Grid>
     </React.Fragment>

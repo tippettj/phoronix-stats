@@ -75,22 +75,30 @@ export function FilterForm(props) {
             }
         }
 
-        if (filters.includes(Constants.ALL)) 
+        console.log("Filters=", filters);
+        // Top Level Searches
+        if (filters.includes(Constants.ALL.name)) 
             results = data;
 
-        if (filters.includes(Constants.LATEST))
+        if (filters.includes(Constants.LATEST.name))
             results = getLatestVersion(data);
 
-        if (filters.includes(Constants.FAILED) || filters.includes(Constants.MD5) || filters.includes(Constants.SHA256)) 
+        // Secondary Searches
+        if (filters.includes(Constants.ALL.name) || filters.includes(Constants.LATEST.name) )
+            data = results;
+
+        if (filters.includes(Constants.FAILED.name) || filters.includes(Constants.MD5.name) || filters.includes(Constants.SHA.name)) {
             results = getFailedData(data, filters);
-    
-        if (filters.includes(Constants.REDIRECT))
+            console.log("results", results);
+        }
+
+        if (filters.includes(Constants.REDIRECTS.name))
             results = getRedirectData(data);
       
-        if (filters.includes(Constants.NOT_TESTED))
+        if (filters.includes(Constants.NOT_TESTED.name))
             results = getNotTestedData(data);
 
-        if (filters.includes(Constants.TIMED_OUT))
+        if (filters.includes(Constants.TIMED_OUT.name))
             results = getTimedOutData(data);
 
         // if all fails display all the data
