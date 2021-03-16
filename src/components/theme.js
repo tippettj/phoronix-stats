@@ -1,5 +1,4 @@
 import {createMuiTheme} from '@material-ui/core/styles';
-import { Tooltip } from '@material-ui/core/Tooltip';
 
 export const theme = createMuiTheme({
     typography: {

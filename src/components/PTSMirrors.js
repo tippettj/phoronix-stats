@@ -7,10 +7,13 @@ import TableRow from '@material-ui/core/TableRow';
 
 import startCase from 'lodash/startCase';
 
+
 import Failures from './PTSFailures';
 import * as Constants from "../Constants";
 import StyledTableCell from './StyledTableCell';
 import useStyles from "./styles";
+import PTSSignifier from './PTSSignifier';
+
 
 
 /**
@@ -93,7 +96,9 @@ const PTSMirrors = (props) => {
                         onClick={() => setOpenMirror(!openMirror)} 
                         className={classes.mirrorHeading}  
                         style={{ color:(props.data.status !==Constants.JSON_PASSED) ? theme.palette.secondary.main: theme.palette.primary.main}}
-                    >Mirror {props.idx + 1}</Typography>
+                        >Mirror {props.idx + 1}
+                        <PTSSignifier colorStatus={props.data.colorStatus}/>
+                    </Typography>
                 </StyledTableCell>
                 <StyledTableCell colSpan={3} style={{verticalAlign: "text-top"}}>
                         <Typography 

@@ -17,14 +17,16 @@ import TableBody from '@material-ui/core/TableBody';
 
 import 'fontsource-roboto';
 
-import Checkboxes, {useCheckboxes} from './Checkboxes';
+import Checkboxes, {useCheckboxes, getCheckboxName} from './Checkboxes';
 import PTSHelp from './PTSHelp';
 import PTSResults from './PTSResults';
 import * as Constants from '../Constants';
 import {theme} from './theme';
 import "./styles.css";
 import useStyles from "./styles";
-import {getNotTestedData, getRedirectData, getSearchData, getFailedData, getTimedOutData, getLatestVersion} from '../processData';
+import PTSSignifier from './PTSSignifier';
+
+import {getNotTestedData, getRedirectData, getSearchData, getFailedData, getLatestVersion, mapData} from '../processData';
 
 
 export function FilterForm(props) {
@@ -54,11 +56,13 @@ export function FilterForm(props) {
      * 
      */
     const getData = (allData) => {
-        let data = [...allData];
+        let data = mapData([...allData]);
+        console.log("Mapped Data:", data);
         let results = data;
 
         // determine which checkboxes have been selected
         const filters = checkboxes.checkboxes.filter((checks) => checks.checked === true).map((checkbox) => checkbox.name);
+        console.log("Filters", filters);
         
         // If no checkboxes have been selected, display nothing
         if (filters && filters.length === 0 ) {
@@ -75,7 +79,6 @@ export function FilterForm(props) {
             }
         }
 
-        console.log("Filters=", filters);
         // Top Level Searches
         if (filters.includes(Constants.ALL.name)) 
             results = data;
@@ -87,10 +90,33 @@ export function FilterForm(props) {
         if (filters.includes(Constants.ALL.name) || filters.includes(Constants.LATEST.name) )
             data = results;
 
-        if (filters.includes(Constants.FAILED.name) || filters.includes(Constants.MD5.name) || filters.includes(Constants.SHA.name)) {
-            results = getFailedData(data, filters);
-            console.log("results", results);
+        //if (filters.includes(Constants.FAILED.name) || filters.includes(Constants.MD5.name) || filters.includes(Constants.SHA.name)) {
+        console.log("filters", filters);
+        if (filters.includes(Constants.FAILED.name) && filters.includes(Constants.CHECKSUM.name)) {
+            let newFilter = getAllFilters(Constants.CHECKSUM, filters);
+            //console.log("1 .....");
+            console.log("new filters", newFilter);
+            results = getFailedData(data, newFilter);
+        } else if (filters.includes(Constants.FAILED.name) && filters.includes(Constants.DOWNLOAD.name)) {
+            let newFilter = getAllFilters(Constants.DOWNLOAD, filters);
+            //console.log("2 .....");
+            console.log("new filters", newFilter);
+            results = getFailedData(data, newFilter);
         }
+            else if (filters.length <=2 && filters.includes(Constants.FAILED.name) ) {
+            //console.log("3 .....");
+            results = getFailedData(data, filters);
+        }
+
+        // if (filters.includes(Constants.FAILED.name) && filters.includes(Constants.DOWNLOAD.name)) {
+        //     let newFilter = getAllFilters(Constants.DOWNLOAD, filters);
+        //     console.log("3 .....");
+        //     console.log("new filters", newFilter);
+        //     results = getFailedData(data, newFilter);
+        // } else if (filters.includes(Constants.FAILED.name) ) {
+        //     console.log("4 .....");
+        //     results = getFailedData(data, filters);
+        // }
 
         if (filters.includes(Constants.REDIRECTS.name))
             results = getRedirectData(data);
@@ -98,12 +124,36 @@ export function FilterForm(props) {
         if (filters.includes(Constants.NOT_TESTED.name))
             results = getNotTestedData(data);
 
-        if (filters.includes(Constants.TIMED_OUT.name))
-            results = getTimedOutData(data);
+        // if (filters.includes(Constants.TIMED_OUT.name))
+        //     results = getTimedOutData(data);
 
         // if all fails display all the data
+        console.log("++Results", results);
         return results;
     }
+
+    function getAllFilters(parent, filters) {
+        // if no children are in the filters then add all the children
+        let children = getChildrensName(parent.children);
+        let childFilters = children.some(child => filters.includes(child));
+        console.log("hasChildren", childFilters, "children", children);
+
+        // If a child filter has been selected limit search to selection, otherwise
+        // search for all child criteria.
+        if (!(childFilters))
+            return [...filters, ...children];
+        else
+            return [...filters]
+    }
+
+    // Convert the index into a checkbox name
+    function getChildrensName(children) {
+        let ch = [];
+        children.map(child => ch.push(getCheckboxName(child)));
+        return ch;
+    }
+
+    let results = getData(props.data);
 
     return(
         <ThemeProvider theme={theme}>
@@ -161,7 +211,26 @@ export function FilterForm(props) {
                                         onChange={(e) => setSearchValue(e.target.value)}   
                                     />                                 
                                 </Grid>
+                                <Grid item xs={12} sm={3} md={2} lg={2}>
+                                    <Grid container direction="column" >
+                                        <Grid container direction="row" >
+                                            <Grid item><PTSSignifier colorStatus={[1]}/></Grid>
+                                            <Typography>XXX</Typography>
+                                        </Grid>
+                                        <Grid container direction="row" >
+                                            <Grid item><PTSSignifier colorStatus={[3]}/></Grid>
+                                            <Typography>MD5</Typography>
+                                        </Grid>
+                                        <Grid container direction="row" >
+                                            <Grid item><PTSSignifier colorStatus={[4]}/></Grid>
+                                            <Typography>SHA</Typography>
+                                        </Grid>
+
+                                    </Grid>
+                                </Grid>
+                    
                             </Grid>
+                            
                             <Grid container 
                                 justify="flex-start"
                                 alignItems="flex-start"
@@ -181,13 +250,18 @@ export function FilterForm(props) {
                         <Divider style={{marginTop: "1em"}}/>
                     </form>
 
-                    <TableContainer >
-                        <Table className={classes.borders}>
-                            <TableBody className={classes.borders}>
-                                <PTSResults results={getData(props.data)} />
-                            </TableBody>
-                        </Table> 
-                    </TableContainer>
+                    {results ? 
+                        (<TableContainer >
+                            <Table className={classes.borders}>
+                                <TableBody className={classes.borders}>
+                                    <PTSResults results={results} />
+                                </TableBody>
+                            </Table> 
+                        </TableContainer>) :
+                        (<Typography>
+                            No Test Profiles match the search criteria
+                        </Typography>)
+                    }
 
                 </React.Fragment>
             </Container>

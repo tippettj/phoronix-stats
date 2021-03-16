@@ -2,6 +2,138 @@ import * as Constants from './Constants';
 
 const semver= require('semver'); // semantic versioner
 
+function mapData(data) {
+    let testProfile = null;
+    let fails = 0;
+    let dataMap = {
+        failed : [],
+        checksum : [],
+        redirect : [],
+        download : [],
+        timeOut : [],
+        notTested : []
+    };
+
+    if (data && data.length>0 ) {
+        testProfile = data.map((profile) => {
+            let checksumError, redirectError, downloadError, timeError, failError, notTested=null;
+            let profileColor = [];
+                
+            profile.packages.map((packs) => {
+                let packageColor = [];
+                
+                packs.mirror.map(mirror => {
+                    let mirrorColor = [];
+
+                    if (mirror.status === Constants.JSON_FAILED) {
+                        mirrorColor = [Constants.COLOR_FAIL];
+                        failError = true;
+                        let data = mirror.failures;
+                        //console.log("+fail");
+
+                        // If the download time is 0, the operation timed out. The checksums produced will be incorrect.
+                         if ("download-time" in mirror &&
+                             mirror['download-time'] === Constants.JSON_TIMED_OUT) {
+                                //console.log("+to");
+                                mirrorColor=[...mirrorColor, Constants.COLOR_TIMEOUT];
+                                timeError = true;
+                         } else {
+                            // Map the Checksums Failures
+                            if (data[Constants.JSON_MD5] !== undefined ) {
+                                //console.log("+md5");
+                                mirrorColor=[...mirrorColor, Constants.COLOR_MD5];
+                                checksumError = true;
+                            }
+                            if (data[Constants.JSON_SHA256] !== undefined ) {
+                                //console.log("+sha");
+                                mirrorColor=[...mirrorColor, Constants.COLOR_SHA];
+                                checksumError = true;
+                            }
+
+                            // Map the Redirects Failures
+                            if (data[Constants.JSON_HTTP_CODE] !== undefined  && data[Constants.JSON_HTTP_CODE].toString() === "301") {
+                                //console.log("+301");
+                                mirrorColor=[...mirrorColor, Constants.COLOR_301];
+                                redirectError = true;
+                            }
+
+                            if (data[Constants.JSON_HTTP_CODE] !== undefined  && data[Constants.JSON_HTTP_CODE].toString() === "302") {
+                                //console.log("+302");
+                                mirrorColor=[...mirrorColor, Constants.COLOR_302];
+                                redirectError = true;
+                            }
+                            
+                            // Other HTTP failures
+                            if (data[Constants.JSON_HTTP_CODE] !== undefined  && data[Constants.JSON_HTTP_CODE] === "404") {
+                                //console.log("+404");
+                                mirrorColor=[...mirrorColor, Constants.COLOR_404];
+                                downloadError = true;
+                            }
+
+                            if (data[Constants.JSON_HTTP_CODE] !== undefined  && !(
+                              data[Constants.JSON_HTTP_CODE].toString() === "404" ||
+                              data[Constants.JSON_HTTP_CODE].toString() === "301" ||
+                              data[Constants.JSON_HTTP_CODE].toString() === "302")) {
+                                //console.log("+http", data[Constants.JSON_HTTP_CODE]);
+                                mirrorColor=[...mirrorColor, Constants.COLOR_HTTP];
+                                downloadError = true;
+                            }
+
+                        }                                             
+                    } else {
+
+                        // Not Tested
+                        if (mirror.status === Constants.JSON_NOT_TESTED) {
+                            //console.log("+notTested");
+                            mirrorColor = [Constants.COLOR_NOT_TESTED];
+                            notTested = true;
+                        } else {
+                            mirrorColor = [Constants.COLOR_PASS];
+                        }
+                    }
+
+                    mirror.colorStatus = mirrorColor;
+                    //console.log("--------", mirror['url'], mirror.colorStatus);
+                    packageColor = [...packageColor, ...mirrorColor]
+                    return mirror;
+                })
+
+                packs.colorStatus = Array.from( new Set(packageColor) );
+                //console.log("-----", packs['pts-filename'], packs.colorStatus);
+                profileColor = [...profileColor, ...packageColor]
+                return packs;   
+            })
+
+            //console.log("Profile color", profileColor);
+            //let cleanProf = new Set(profileColor);
+            profile.colorStatus = Array.from( new Set(profileColor) );
+            //console.log(profile['profile-name'], profile.colorStatus);
+
+            if (notTested)
+                dataMap.notTested.push(profile);
+            if (failError)
+                dataMap.failed.push(profile);
+            if (checksumError)
+                dataMap.checksum.push(profile);
+            if (redirectError)
+                dataMap.redirect.push(profile);
+            if (downloadError)
+                dataMap.download.push(profile);
+            if (timeError)
+                dataMap.timeOut.push(profile);
+
+
+            // if (failError || checksumError || redirectError || downloadError || timeError || notTested)
+            //     console.log("data map", dataMap);
+
+            return profile;
+       
+        })   
+    } 
+    //console.log("Test Profile", testProfile.colorStatus);
+    //console.log("total fails", fails);
+    return testProfile;
+}
 
 /**
  * Determines if the test has failed. 
@@ -51,6 +183,7 @@ function getNotTestedData(data) {
           )))
     } 
 }
+
 
 /**
  * Returns all profiles that have timed out during the curl download.
@@ -118,48 +251,179 @@ const getSearchData = (data, value) => {
 function getFailedData(data, searchFilters = null) {
     let testProfile = null;
     if (data && data.length>0 ) {
-      testProfile = data.filter((profile) => {
-          return profile.packages.some((packs) => {
-            return packs.mirror.some(mirror => {
-               if (mirror.status === Constants.JSON_FAILED) {
-                   if (searchFilters.includes(Constants.MD5.name) || searchFilters.includes(Constants.SHA.name)) {
-                       return getSpecificFailures( mirror, searchFilters);
-                   } else 
-                      return true;
-                } else { 
+        testProfile = data.filter((profile) => {
+            let profileColor = [];
+
+            let z = profile.packages.filter((packs) => {
+                //console.log("    **** filtering mirrors with errors",packs);
+                let packageColor = [];
+                let x = packs.mirror.filter(mirror => {
+
+                    if (mirror.status === Constants.JSON_FAILED) {
+                        let y = null;
+                    //console.log(packs['identifier'], "httpCode", mirror.failures[Constants.JSON_HTTP_CODE]);
+                    if (searchFilters.includes(Constants.CHECKSUM.name) && (searchFilters.includes(Constants.MD5.name) || searchFilters.includes(Constants.SHA.name))) {
+                            let {failedData, colorStatus} = getChecksumFailures( mirror, searchFilters, packs);
+                            y=failedData;
+                            if ( y !== undefined) {
+                                console.log("!!!!", packs['identifier'], y, colorStatus);
+                                packageColor = [...packageColor, ...colorStatus];
+                            }
+                    } else if (searchFilters.includes(Constants.DOWNLOAD.name) || searchFilters.includes(Constants.TIMED_OUT.name)) {
+                            let {failedData, colorStatus}= getDownloadFailures(mirror, searchFilters, packs);
+                            y=failedData;
+                            if ( y !== undefined) {
+                                console.log("####", mirror['url'], y, colorStatus);
+                                packageColor = [...packageColor, ...colorStatus];
+                            }        
+                    } else {
+                            y= true;
+                    }
+                    //console.log(packs['identifier'], "mirror failed", y);
+                    if (y) 
+                        return mirror;
+                    else 
+                        return false;
+                    //return y;
+                    } else { 
+                        //console.log(packs['identifier'], "mirror did not fail ", false);
+                        return false;
+
+                    }
+                })
+                //console.log("    **** filtered mirrors",packs.mirror,"to",x);
+
+               // console.log(packs['identifier'], "package returning", x.length);
+                if ( x.length === 0)
                     return false;
+                else {
+                    packs.colorStatus = packageColor;
+                    console.log("@@@@", "packs",...packs.colorStatus, "profile",...profileColor);
+                    profileColor = [...profileColor, ...packageColor];
+                    //profileColor = new Set([...profileColor, ...packageColor]); // set will not repeat a color
+                    console.log("returning ", packs.colorStatus);
+
+                    return packs;
                 }
-            }  
-        )})
+            })
+            //console.log("  **** filtered packages",profile.packages,"to",z);
+
+            profile.colorStatus = profileColor;
+
+        if ( z.length === 0)
+            return false;
+        else {
+           // console.log("returning ", packs);
+            return z;  /** MTP */
+        }
+
+        //console.log("profile returning", z);
+        return z;
     })
+
+    //console.log("**** filtering profiles",data,"to",testProfile);
+
+   
+    console.log("Exiting getFailedData with ", testProfile);
     return testProfile;
-  } 
+  } // **MTP** Need an else to return something
 }
 
 /**
  * When the user selects the Failed Checkbox, function returns records that satisfy the failed criteria
- * @param {*} fData The mirror array containing the failed data
+ * @param {*} mirror The mirror array containing the failed data
  * @param {*} searchFilters The filters to apply for one or more specific failures ie md5
  * @returns boolean true if a match fitting the search criteria has been found
  */
-function getSpecificFailures(fData, searchFilters) {
-    let data = fData.failures;  // JSON failure details
-    let failedData = null;      
+function getChecksumFailures(mirror, searchFilters,packs) {
+    let data = mirror.failures;  // JSON failure details
+    let failedData = null;   
+    let colorStatus = [];   
 
+    //console.log("Getting CheckSum Failures....");
+
+    // If md5 and sha256 dne then this is not a checksum failure
+    if (!data.md5 && !data.sha256) {
+        //console.log(packs['identifier'], "returning false no checksum");
+        return false;
+    }
+
+    // If the download time is 0, the operation timed out. The checksums produced will be incorrect.
+    if ("download-time" in mirror) {
+        if (mirror['download-time'] === Constants.JSON_TIMED_OUT) {
+            //console.log(packs['identifier'], "returning false download 0");
+            return false;
+        }
+    }
+    //console.log(packs['identifier'], "md5", data.md5, "sha", data.sha256);
+
+ 
     // if only the Failed Checkbox has been selected then return all records that failed, otherwise return
     // only those failed records that match the selected checkboxes. ie md5 or sha256
-    if (searchFilters.length === 1 && searchFilters.includes(Constants.FAILED.name) ) 
-        failedData = (fData.status === Constants.JSON_FAILED);
-    else if (searchFilters.includes(Constants.MD5.name) && searchFilters.includes(Constants.SHA.name))
-        failedData = (data.md5 !== undefined || data.sha256 !== undefined)
-    else if (searchFilters.includes(Constants.MD5.name) && !searchFilters.includes(Constants.SHA.name))
-        failedData = (data.md5 !== undefined )
-    else if (searchFilters.includes(Constants.SHA.name) && !searchFilters.includes(Constants.MD5.name)) 
-        failedData= (data.sha256 !== undefined)
+    console.log(packs, mirror.status, "md5", data.md5, "sha", data.sha256);
+    if (searchFilters.length <= 2 && searchFilters.includes(Constants.FAILED.name) ) {
+        failedData = (mirror.status === Constants.JSON_FAILED);
+        colorStatus = [Constants.COLOR_FAIL];
+     } else if (searchFilters.includes(Constants.MD5.name) && searchFilters.includes(Constants.SHA.name)) {
+        failedData = (data.md5 !== undefined || data.sha256 !== undefined);
+        if (data.md5) {
+            colorStatus=[...colorStatus, Constants.COLOR_MD5];
+            //console.log("...setting md5 color");
+        }
+        if (data.sha256){ 
+            colorStatus=[...colorStatus, Constants.COLOR_SHA] ;
+           // console.log("...setting sha color");
 
-    return failedData;
+        }       
+     } else if (searchFilters.includes(Constants.MD5.name) && !searchFilters.includes(Constants.SHA.name)) {
+        failedData = (data.md5 !== undefined )
+        colorStatus = [Constants.COLOR_MD5];
+    } else if (searchFilters.includes(Constants.SHA.name) && !searchFilters.includes(Constants.MD5.name)) {
+        failedData= (data.sha256 !== undefined)
+        colorStatus = [Constants.COLOR_SHA];
+    }
+
+    if (failedData !== false)
+        console.log("^^^^", packs['identifier'], "returning ", failedData, "color", colorStatus);
+    return {failedData, colorStatus};
 }
 
+function getDownloadFailures(mirror, searchFilters, packs) {
+    let data = mirror.failures;  // JSON failure details
+    let failedData = null;   
+    let colorStatus = [];
+    let searchTimeOut = searchFilters.includes(Constants.TIMED_OUT.name);
+    let searchNotFound = searchFilters.includes(Constants.NOT_FOUND.name);
+  
+    console.log("Getting Download Failures....");
+
+    //console.log(packs, "mirrorStatus", mirror.status,  "TimedOut", mirror['download-time'], "HTTP", mirror.failures[Constants.JSON_HTTP_CODE]);
+    if ((searchFilters.length <= 2) && (searchFilters.includes(Constants.FAILED.name))) {
+        failedData = (mirror.status === Constants.JSON_FAILED);
+        if (failedData)
+            colorStatus = [Constants.COLOR_FAIL];
+    }
+    
+    if (searchTimeOut){
+        failedData = (mirror['download-time'] === Constants.JSON_TIMED_OUT);
+        if (failedData)
+            colorStatus = [Constants.COLOR_TIMEOUT];
+
+    }
+
+    if (searchNotFound) {
+        failedData = (mirror.failures[Constants.JSON_HTTP_CODE] === Constants.HTTP_404);
+        if (failedData)
+            colorStatus = [Constants.COLOR_HTTP_404];
+    }
+        // else if (searchFilters.includes(Constants.NOT_TESTED.name) && !searchFilters.includes(Constants.TIMED_OUT.name))
+    //     failedData = (data.JSON_NOT_TESTED !== undefined );
+    // else if (!searchFilters.includes(Constants.NOT_TESTED.name) && searchFilters.includes(Constants.TIMED_OUT.name)) 
+    //     failedData= (mirror['download-time'] === Constants.JSON_TIMED_OUT);
+    console.log(".........", packs['identifier'], failedData, colorStatus);
+    return {failedData, colorStatus};
+                  
+}
 /**
  * Splits the profile name into the test profile name
  * @param {*} profileName   profile name such as pts/apache-1.2.1
@@ -212,5 +476,5 @@ function getLatestVersion(data) {
 }
 
 
-export {getNotTestedData, getRedirectData, getSearchData, getFailedData, notTestedPackage, hasFailedStatus, timedOutPackage, getTimedOutData, getLatestVersion}
+export {mapData,getNotTestedData, getRedirectData, getSearchData, getFailedData, notTestedPackage, hasFailedStatus, timedOutPackage, getTimedOutData, getLatestVersion}
 

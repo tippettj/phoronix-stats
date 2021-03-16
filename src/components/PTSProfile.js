@@ -4,6 +4,8 @@ import Collapse from "@material-ui/core/Collapse";
 import TableRow from '@material-ui/core/TableRow';
 
 import PTSPackages from './PTSPackages';
+import PTSSignifier from './PTSSignifier';
+
 import StyledTableCell from './StyledTableCell';
 import {notTestedPackage, hasFailedStatus} from "../processData";
 
@@ -48,6 +50,7 @@ const PTSProfile = props => {
                         color={hasFailedStatus(profile.packages)?'secondary':'primary'} 
                         >
                         {profile['profile-name']}
+                        <PTSSignifier colorStatus={props.data.colorStatus}/>
                     </Typography>
                 </StyledTableCell>
             </TableRow> 

@@ -36,9 +36,9 @@ export const useStyles = makeStyles(() => ({
 
     // keep for debugging
     borders: {
-        // borderWidth: 1,
-        // borderColor: "red",
-        // borderStyle: "solid", 
+        borderWidth: 1,
+        borderColor: "black",
+        borderStyle: "solid", 
     },
 
     // checkboxes tool tip
