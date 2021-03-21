@@ -4,7 +4,6 @@ const semver= require('semver'); // semantic versioner
 
 function mapData(data) {
     let testProfile = null;
-    let fails = 0;
     let dataMap = {
         failed : [],
         checksum : [],
@@ -55,6 +54,11 @@ function mapData(data) {
                                 //console.log("+301");
                                 mirrorColor=[...mirrorColor, Constants.COLOR_301];
                                 redirectError = true;
+
+                                // Ok - as per requirements, a 301 is not necessarily a failure so we will change the status
+                                // from a failure to a pass however it will still be tagged with a 301 error.
+                                //mirror.status = "Warning";
+                                //console.log(packs['identifier'], " rewritten to be a pass");
                             }
 
                             if (data[Constants.JSON_HTTP_CODE] !== undefined  && data[Constants.JSON_HTTP_CODE].toString() === "302") {
@@ -63,14 +67,22 @@ function mapData(data) {
                                 redirectError = true;
                             }
                             
-                            // Other HTTP failures
-                            if (data[Constants.JSON_HTTP_CODE] !== undefined  && data[Constants.JSON_HTTP_CODE] === "404") {
+                            //  HTTP 404 failure
+                            if (data[Constants.JSON_HTTP_CODE] !== undefined  && data[Constants.JSON_HTTP_CODE].toString() === "404") {
                                 //console.log("+404");
                                 mirrorColor=[...mirrorColor, Constants.COLOR_404];
                                 downloadError = true;
                             }
 
+                            if (data[Constants.JSON_HTTP_CODE] !== undefined  && data[Constants.JSON_HTTP_CODE].toString() === "0") {
+                                //console.log("+404");
+                                mirrorColor=[...mirrorColor, Constants.COLOR_HTTP_0];
+                                downloadError = true;
+                            }
+
+                            // Other HTTP failures
                             if (data[Constants.JSON_HTTP_CODE] !== undefined  && !(
+                              data[Constants.JSON_HTTP_CODE].toString() === "0" ||
                               data[Constants.JSON_HTTP_CODE].toString() === "404" ||
                               data[Constants.JSON_HTTP_CODE].toString() === "301" ||
                               data[Constants.JSON_HTTP_CODE].toString() === "302")) {
@@ -132,7 +144,8 @@ function mapData(data) {
     } 
     //console.log("Test Profile", testProfile.colorStatus);
     //console.log("total fails", fails);
-    return testProfile;
+    //console.log("Returning dataMap", dataMap);
+    return {testProfile, dataMap};
 }
 
 /**
@@ -140,11 +153,39 @@ function mapData(data) {
  * A failure of JSON_NOT_TESTED means that no PTS Data is available to display so set the notTested flag.
  * @param {*} packages all the data
  */
+const getColor = (test) => {
+    let col = Constants.COLOR_PASS;
+
+    if (test.includes(Constants.COLOR_FAIL))
+        col = Constants.COLOR_FAIL;
+    if (!test.includes(Constants.COLOR_PASS) && !test.includes(Constants.COLOR_NOT_TESTED))
+        col = Constants.COLOR_FATAL;
+
+    // If the test is a 301 redirect, it's probably not a failure so mark as a warning
+    // however is one of the mirrors contains another failure, mark it as a fail
+    if (test.includes(Constants.COLOR_301) && test.length === 2) {
+        console.log("!!returning warning");
+        col =  Constants.COLOR_WARNING;
+    } else if (test.includes(Constants.COLOR_301) && test.length > 2){
+        let otherFails = false;
+        if (test.includes(Constants.COLOR_PASS)) {  
+            otherFails = test.some(c => {                
+                if ( c > 2 && c !== Constants.COLOR_301)
+                    return true;  
+            })
+            col = (otherFails) ? Constants.COLOR_FAIL : Constants.COLOR_PASS;
+        } else {
+            col = Constants.COLOR_WARNING;
+        }
+    }
+
+    return col; 
+};
+
 const hasFailedStatus = (packages) => {
     return packages.some(pack => 
         pack.mirror.some(mirror => mirror.status === Constants.JSON_FAILED)   
 )};
-
 /**
  * 
  * In the case of no download.xml file, the test status will be NOT_TESTED.
@@ -266,14 +307,14 @@ function getFailedData(data, searchFilters = null) {
                             let {failedData, colorStatus} = getChecksumFailures( mirror, searchFilters, packs);
                             y=failedData;
                             if ( y !== undefined) {
-                                console.log("!!!!", packs['identifier'], y, colorStatus);
+                                //console.log("!!!!", packs['identifier'], y, colorStatus);
                                 packageColor = [...packageColor, ...colorStatus];
                             }
                     } else if (searchFilters.includes(Constants.DOWNLOAD.name) || searchFilters.includes(Constants.TIMED_OUT.name)) {
                             let {failedData, colorStatus}= getDownloadFailures(mirror, searchFilters, packs);
                             y=failedData;
                             if ( y !== undefined) {
-                                console.log("####", mirror['url'], y, colorStatus);
+                                //console.log("####", mirror['url'], y, colorStatus);
                                 packageColor = [...packageColor, ...colorStatus];
                             }        
                     } else {
@@ -298,10 +339,10 @@ function getFailedData(data, searchFilters = null) {
                     return false;
                 else {
                     packs.colorStatus = packageColor;
-                    console.log("@@@@", "packs",...packs.colorStatus, "profile",...profileColor);
+                    //console.log("@@@@", "packs",...packs.colorStatus, "profile",...profileColor);
                     profileColor = [...profileColor, ...packageColor];
                     //profileColor = new Set([...profileColor, ...packageColor]); // set will not repeat a color
-                    console.log("returning ", packs.colorStatus);
+                    //console.log("returning ", packs.colorStatus);
 
                     return packs;
                 }
@@ -318,7 +359,7 @@ function getFailedData(data, searchFilters = null) {
         }
 
         //console.log("profile returning", z);
-        return z;
+        //return z;
     })
 
     //console.log("**** filtering profiles",data,"to",testProfile);
@@ -411,11 +452,11 @@ function getDownloadFailures(mirror, searchFilters, packs) {
 
     }
 
-    if (searchNotFound) {
-        failedData = (mirror.failures[Constants.JSON_HTTP_CODE] === Constants.HTTP_404);
-        if (failedData)
-            colorStatus = [Constants.COLOR_HTTP_404];
-    }
+    // if (searchNotFound) {
+    //     failedData = (mirror.failures[Constants.JSON_HTTP_CODE] === Constants.HTTP_404);
+    //     if (failedData)
+    //         colorStatus = [Constants.COLOR_HTTP_404];
+    // }
         // else if (searchFilters.includes(Constants.NOT_TESTED.name) && !searchFilters.includes(Constants.TIMED_OUT.name))
     //     failedData = (data.JSON_NOT_TESTED !== undefined );
     // else if (!searchFilters.includes(Constants.NOT_TESTED.name) && searchFilters.includes(Constants.TIMED_OUT.name)) 
@@ -475,6 +516,33 @@ function getLatestVersion(data) {
     return profiles;
 }
 
+// const getProfileColor = (profile, translate=true) => {
+//     let color = profile;
+//     if (translate)
+//         color = getColor(profile);
+//         console.log("getProfileColor", profile, color);
 
-export {mapData,getNotTestedData, getRedirectData, getSearchData, getFailedData, notTestedPackage, hasFailedStatus, timedOutPackage, getTimedOutData, getLatestVersion}
+//     let returnCol;
+//     switch (color) {
+//         case Constants.COLOR_PASS:
+//             returnCol = theme.palette.primary.main;
+//             break;
+//         case Constants.COLOR_WARNING:
+//             returnCol = 'textSecondary';
+//             break;
+//         case Constants.COLOR_FAIL:
+//             returnCol = 'secondary';
+//             break;
+//         case Constants.COLOR_FATAL:
+//             returnCol = 'error';
+//             break;
+//         default:
+//             returnCol = 'secondary';
+//     }
+//     console.log('#####',profile, returnCol);
+//     return returnCol;
+// }
+
+
+export {mapData, getColor, getNotTestedData, getRedirectData, getSearchData, getFailedData, notTestedPackage, hasFailedStatus, timedOutPackage, getTimedOutData, getLatestVersion}
 
