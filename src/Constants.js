@@ -12,6 +12,37 @@ export const DOWNLOAD_IDX = 9;
 export const NOT_FOUND_IDX = 10;
 export const R301_IDX = 11;
 export const R302_IDX = 12;
+//export const HTTP_404_IDX = 13;
+export const NONE_IDX = 13;
+
+
+//Colors
+export const COLOR_NEUTRAL=0
+export const COLOR_PASS=1
+export const COLOR_FAIL=2
+export const COLOR_MD5=3
+export const COLOR_SHA=4
+export const COLOR_TIMEOUT=5
+export const COLOR_HTTP_0=6
+export const COLOR_HTTP_404=7
+export const COLOR_301=8
+export const COLOR_302=9
+export const COLOR_404=10
+export const COLOR_HTTP=11
+export const COLOR_NOT_TESTED=12
+export const COLOR_WARNING=13
+export const COLOR_FATAL=14
+export const COLOR_CHECKSUM=15
+export const COLOR_REDIRECT=16
+export const COLOR_DOWNLOAD=17
+export const COLOR_NO_CATEGORY=18
+
+
+
+
+
+
+
 
 
 /**
@@ -69,6 +100,16 @@ export const FAILED = {
     desc: "Displays all test profiles that failed",
 }
 
+export const NONE = {
+    name: "All",
+    idx: NONE_IDX,
+    checked: true,
+    disabled: false,
+    competes:[REDIRECTS_IDX, DOWNLOAD_IDX, CHECKSUM_IDX],
+    children: [MD5_IDX, SHA_IDX, R301_IDX,R302_IDX],
+    desc: "Displays all test profiles with an invalid checksum",
+}
+
 export const NOT_TESTED = {
     name: "Not Tested",
     idx: NOT_TESTED_IDX,
@@ -79,7 +120,7 @@ export const NOT_TESTED = {
 }
 
 export const MD5 = {
-    name: "MD5 Fails",
+    name: "MD5 Failed",
     idx: MD5_IDX,
     checked: false,
     disabled: true,
@@ -87,7 +128,7 @@ export const MD5 = {
 }
 
 export const SHA = {
-    name: "SHA256 Fails",
+    name: "SHA256 Failed",
     idx: SHA_IDX,
     checked: false,
     disabled: true,
@@ -99,7 +140,7 @@ export const CHECKSUM = {
     idx: CHECKSUM_IDX,
     checked: false,
     disabled: true,
-    competes:[REDIRECTS_IDX, DOWNLOAD_IDX],
+    competes:[REDIRECTS_IDX, DOWNLOAD_IDX, NONE_IDX],
     children: [MD5_IDX, SHA_IDX],
     desc: "Displays all test profiles with an invalid checksum",
 }
@@ -109,7 +150,7 @@ export const DOWNLOAD = {
     idx: DOWNLOAD_IDX,
     checked: false,
     disabled: true,
-    competes:[REDIRECTS_IDX, CHECKSUM_IDX],
+    competes:[REDIRECTS_IDX, CHECKSUM_IDX, NONE_IDX],
     children: [TIMED_OUT_IDX, NOT_FOUND_IDX],
     //children: [TIMED_OUT_IDX],
     desc: "Displays all test profiles with download issues",
@@ -139,12 +180,12 @@ export const REDIRECTS = {
     checked: false,
     disabled: true,
     children: [R301_IDX, R302_IDX],
-    competes:[CHECKSUM_IDX, DOWNLOAD_IDX],
+    competes:[CHECKSUM_IDX, DOWNLOAD_IDX, NONE_IDX],
     desc: "Displays all test profiles with A HTTP redirect status",
 }
 
 export const R301 = {
-    name: "HTTP 301",
+    name: "301 Error",
     idx: R301_IDX,
     checked: false,
     disabled: true,
@@ -152,13 +193,20 @@ export const R301 = {
 }
 
 export const R302 = {
-    name: "HTTP 302",
+    name: "302 Error",
     idx: R302_IDX,
     checked: false,
     disabled: true,
     desc: "Displays all test profiles with a HTTP Status of 302",
 }
 
+// export const HTTP_404 = {
+//     name: "HTTP 404 Error",
+//     idx: HTTP_404_IDX,
+//     checked: false,
+//     disabled: true,
+//     desc: "Displays all test profiles with a HTTP Status of 404",
+// }
 
 
 
@@ -183,22 +231,9 @@ export const JSON_404="404";
 export const HTTP_0=0; // ftp download timeout
 export const HTTP_301=301;
 export const HTTP_302=302;
-export const HTTP_404=404; // not found
+//export const HTTP_404=404; // not found
 
-//Colors
-export const COLOR_NEUTRAL=0
-export const COLOR_PASS=1
-export const COLOR_FAIL=2
-export const COLOR_MD5=3
-export const COLOR_SHA=4
-export const COLOR_TIMEOUT=5
-export const COLOR_HTTP_0=6
-export const COLOR_HTTP_404=7
-export const COLOR_301=8
-export const COLOR_302=9
-export const COLOR_404=10
-export const COLOR_HTTP=11
-export const COLOR_NOT_TESTED=11
+
 
 
 
