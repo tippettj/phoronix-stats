@@ -9,7 +9,6 @@ import { withStyles } from '@material-ui/core/styles';
 import * as Constants from "../Constants";
 import PTSMirrors from './PTSMirrors';
 import StyledTableCell from './StyledTableCell';
-import PTSSignifier from './PTSSignifier';
 
 /**
  * Diplays the package details of the JSON results
@@ -22,7 +21,7 @@ const PTSPackages = props => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);  // state of collapse component for displaying mirrors
 
-    const {identifier, "pts-filename" : filename, "pts-filesize" : filesize, "pts-sha256" : sha256, "pts-md5" : md5, mirror, colorStatus} = props.data;
+    const {identifier, "pts-filename" : filename, "pts-filesize" : filesize, "pts-sha256" : sha256, "pts-md5" : md5, mirror} = props.data;
     const hasFailedStatus = (props) => {
         return props.mirror.some((mirror) => mirror.status === Constants.JSON_FAILED)
     }
@@ -36,6 +35,7 @@ const PTSPackages = props => {
             status = (<span>{props.status}</span>);     
         } else {
             status = props.map((mir, key) => {
+                //console.log("+++mir", mir);
                 return <PTSMirrors  key={key} identifier={identifier} data={mir} idx={key}/>
             })
         }
@@ -93,7 +93,7 @@ const PTSPackages = props => {
                         color={hasFailedStatus(packages)?'secondary':'primary'} 
                         className={classes.packageName}>
                     {filename } 
-                    <PTSSignifier filename={filename} colorStatus={colorStatus}/>
+                    {/* <PTSSignifier filename={filename} colorStatus={colorStatus}/> */}
                     </Typography>
                 </StyledTableCell>
             </TableRow> 

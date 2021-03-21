@@ -63,6 +63,9 @@ const PTSMirrors = (props) => {
         var containsFailures = null; 
 
         const result = Object.entries(props.data).map(([key, value], idx) => {
+            if (key.toLowerCase() === "colorstatus")
+                return null;
+
             if (key.toLowerCase() === Constants.JSON_FAILURES.toLowerCase()) {
                 containsFailures = <Failures key={idx} classes={classes} failed={props.data.failures} />
                 return null;

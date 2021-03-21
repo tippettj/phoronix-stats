@@ -7,8 +7,8 @@ export const useStyles = makeStyles(() => ({
     root: {
       background: "#fbfffc",
       marginBottom: "3em",
+      flexGrow: 1,
     },
-
     progressBar: {
       color: theme.palette.secondary.main,
       position: "relative",
@@ -33,19 +33,28 @@ export const useStyles = makeStyles(() => ({
       background: theme.palette.primary.main,
       padding: '1em',
     },
-
+    paper: {
+      padding: theme.spacing(2),
+      margin: "1rem 1rem 1rem 0rem",
+      textAlign: "left",
+      color: theme.palette.text.secondary,
+      height: "220px",
+    },
     // keep for debugging
     borders: {
         borderWidth: 1,
         borderColor: "black",
         borderStyle: "solid", 
     },
-
+   
     // checkboxes tool tip
     checkboxTip: {
       // backgroundColor: theme.palette.common.white,
       color: theme.palette.common.black,
       fontSize: "48!important",
+    },
+    tableHeader: {
+      backgroundColor: theme.palette.grey[200],
     },
     // Rows containing the profile Name
     profileNameRow: {

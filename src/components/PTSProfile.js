@@ -5,13 +5,66 @@ import TableRow from '@material-ui/core/TableRow';
 
 import PTSPackages from './PTSPackages';
 import PTSSignifier from './PTSSignifier';
+import * as Constants from '../Constants';
+import {theme} from './theme';
+
 
 import StyledTableCell from './StyledTableCell';
-import {notTestedPackage, hasFailedStatus} from "../processData";
+import {notTestedPackage, getColor} from "../processData";
+// import {notTestedPackage, getProfileColor} from "../processData";
 
 import useStyles from "./styles";
 
+// const getProfileColor = (profile, translate=true) => {
+//     let color = profile;
+//     if (translate)
+//         color = getColor(profile);
 
+//     //console.log('#####',profile, color);
+//     let returnCol;
+//     switch (color) {
+//         case Constants.COLOR_PASS:
+//             returnCol = 'primary';
+//             break;
+//         case Constants.COLOR_WARNING:
+//             returnCol = 'textPrimary';
+//             break;
+//         case Constants.COLOR_FAIL:
+//             returnCol = 'secondary';
+//             break;
+//         case Constants.COLOR_FATAL:
+//             returnCol = 'error';
+//             break;
+//         default:
+//             returnCol = 'secondary';
+//     }
+//     return returnCol;
+// }
+
+const getProfileColor = (profile, translate=true) => {
+    let color = profile;
+    if (translate)
+        color = getColor(profile);
+
+    let returnCol;
+    switch (color) {
+        case Constants.COLOR_PASS:
+            returnCol = theme.palette.primary.main;
+            break;
+        case Constants.COLOR_WARNING:
+            returnCol = theme.palette.warning.dark;
+            break;
+        case Constants.COLOR_FAIL:
+            returnCol = theme.palette.secondary.main;
+            break;
+        case Constants.COLOR_FATAL:
+            returnCol = theme.palette.fatal.main;
+            break;
+        default:
+            returnCol = 'secondary';
+    }
+    return returnCol;
+}
 const PTSProfile = props => {
     const profile=props.data;
     const [open, setOpen] = React.useState(false);  // hold state for the profile name collapse component 
@@ -39,7 +92,7 @@ const PTSProfile = props => {
           })      
         }
       }
-
+      
     return (
         <>
             <TableRow className={classes.profileNameRow}>
@@ -47,7 +100,9 @@ const PTSProfile = props => {
                     <Typography 
                         onClick={() => setOpen(!open)} 
                         className={classes.profileName}
-                        color={hasFailedStatus(profile.packages)?'secondary':'primary'} 
+                        style={{color:getProfileColor(profile.colorStatus)}}
+                        //color={getProfileColor(profile.colorStatus)} 
+
                         >
                         {profile['profile-name']}
                         <PTSSignifier colorStatus={props.data.colorStatus}/>
@@ -65,4 +120,6 @@ const PTSProfile = props => {
      )
 }
 
+
 export default PTSProfile;
+export {getProfileColor};
