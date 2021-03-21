@@ -4,6 +4,7 @@ import React,{useState, useEffect} from 'react';
 import { FilterForm } from './components/FilterForm';
 import { LinearProgress } from '@material-ui/core';
 import useStyles from './components/styles';
+import {mapData, getLatestVersion} from '../src/processData.js';
 
 function App() {
   //const apiEndPoint = "check-tests-results.json";   
@@ -21,13 +22,28 @@ function App() {
   useEffect(()=> {
      const getData = async () => {
         const result = await axios(apiEndPoint);
-        setData(result.data);
+        // Map all versions of a profile
+        let mappedData = mapData(result.data);
+
+        // Map the latest version of each profile
+        let latestVersion = getLatestVersion(result.data);
+        let mappedLatestData = mapData(latestVersion);
+
+        let map = {
+          all : mappedData,
+          latest : mappedLatestData
+        };
+        
+
+        //console.log("!!!!UseEffect mappedData", map);
+        setData(map);
         setLoading(false);
     }
 
     getData();
 
   },[])
+
 
   return (
     <div className={classes.root}>
