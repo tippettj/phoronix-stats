@@ -15,13 +15,12 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 import 'fontsource-roboto';
 
-import Checkboxes, {useCheckboxes, getCheckboxName} from './Checkboxes';
+import Checkboxes, {useCheckboxes} from './Checkboxes';
 import PTSHelp from './PTSHelp';
 import Legend from './Legend';
 import PTSResults from './PTSResults';
@@ -29,26 +28,28 @@ import * as Constants from '../Constants';
 import {theme} from './theme';
 import "./styles.css";
 import useStyles from "./styles";
+import StyledTableCell from './StyledTableCell';
 
 
-import {getProfileColor, getSearchData} from '../processData';
+
+import { getSearchData } from '../processData';
 
 
 export function FilterForm(props) {
+    const { lastDownload } = props;
     const [searchValue, setSearchValue] = useState(""); // value in the profileName text field
     const checkboxes = useCheckboxes();                 // filter to determine which results to display
     const classes = useStyles();                        
 
-
     const [legend, setLegend] = React.useState(false);
     
-      const handleLegend = (event) => {
-        //console.log("!!!!legend", legend);
+    // Display/Hide Legend based on the legend checkbox value
+    const handleLegend = (event) => {
         setLegend(event.target.checked);
-      };
+    };
 
+    // Clear the profile name text field
       const handleClearSearch = (event) => {
-        //console.log("!!!!clear", searchValue);
         setSearchValue("");
         event.preventDefault();
       };
@@ -57,13 +58,6 @@ export function FilterForm(props) {
     const handleDisplay = (event) => {
         event.preventDefault();
     }
-
-    // clear form of all data and reset checkboxes
-    // const clearForm = (event) => {
-    //     checkboxes.checkboxes.map((box, idx) => checkboxes.setCheckbox(idx, false));
-    //     setSearchValue("");
-    //     event.preventDefault();
-    // }
 
     /**
      * Get the data to display. 
@@ -75,15 +69,11 @@ export function FilterForm(props) {
      * 
      */
     const getData = (allData) => {
-        //let {testProfile : data, dataMap}= mapData([...allData]);
         let {testProfile : data, dataMap}= allData.all;
         let {testProfile : latestData, dataMap : latestDataMap}= allData.latest;
-
-        //console.log("Mapped Data:", data, dataMap);
         
-        // determine which checkboxes have been selected
+        // determine which checkboxes have been selected as these will be the filters for the search
         const filters = checkboxes.checkboxes.filter((checks) => checks.checked === true).map((checkbox) => checkbox.name);
-        //console.log("Filters", filters);
         
         // Set the default to display all results
         let results = data;
@@ -93,30 +83,24 @@ export function FilterForm(props) {
             results = null;
         }
 
-        // Top Level Searches
+        // Top Level Searches either ALL or LATEST versions of a test profile
         if (filters.includes(Constants.ALL.name)) 
             results = data;
 
         if (filters.includes(Constants.LATEST.name)) {
             results = latestData;
             dataMap = latestDataMap;
-            //results = getLatestVersion(data);
         }
 
-        // Secondary Searches
-        //if (filters.includes(Constants.FAILED.name) || filters.includes(Constants.MD5.name) || filters.includes(Constants.SHA.name)) {
-        //console.log("DataMap before secondary filters", dataMap);
+        // Secondary Searches use the results from the top level search
         if (filters.includes(Constants.FAILED.name) && filters.includes(Constants.CHECKSUM.name)) {
-            //let newFilter = getAllFilters(Constants.CHECKSUM, filters);
+            //let newFilter = getAllFilters(Constants.CHECKSUM, filters); //for future dev if want to drill down to either MD5 or SHA
             results = dataMap.checksum;
         } else if (filters.includes(Constants.FAILED.name) && filters.includes(Constants.DOWNLOAD.name)) {
-            //let newFilter = getAllFilters(Constants.DOWNLOAD, filters);
             results = dataMap.download;
         } else if (filters.includes(Constants.FAILED.name) && filters.includes(Constants.REDIRECTS.name)) {
-            //let newFilter = getAllFilters(Constants.REDIRECTS, filters);
             results = dataMap.redirect;
         } else if (filters.includes(Constants.FAILED.name) && filters.includes(Constants.NONE.name)) {
-            //let newFilter = getAllFilters(Constants.REDIRECTS, filters);
             results = dataMap.failed;        
         } else if (filters.includes(Constants.NOT_TESTED.name)) {
             results = dataMap.notTested;
@@ -124,7 +108,7 @@ export function FilterForm(props) {
             results = dataMap.failed;
         }
 
-         // If a search value has been defined, get the subset of data that matches the search criteria
+         // If a search value has been defined in the Test Profile text field, get the subset of data that matches the search criteria
         // and further reduce the data based on the filters selected.
         if ( searchValue !== "" ) {
             results = getSearchData(results, searchValue);
@@ -133,28 +117,21 @@ export function FilterForm(props) {
         return results;
     }
 
-    function getAllFilters(parent, filters) {
-        // if no children are in the filters then add all the children
-        let children = getChildrensName(parent.children);
-        let childFilters = children.some(child => filters.includes(child));
-        console.log("hasChildren", childFilters, "children", children);
+    // **** Keep for future development if you want to add specific failed checkboxes ie MD5s or SHAs
+    // function getAllFilters(parent, filters) {
+    //     // if no children are in the filters then add all the children
+    //     let children = getChildrensName(parent.children);
+    //     let childFilters = children.some(child => filters.includes(child));
 
-        // If a child filter has been selected limit search to selection, otherwise
-        // search for all child criteria.
-        if (!(childFilters))
-            return [...filters, ...children];
-        else
-            return [...filters]
-    }
+    //     // If a child filter has been selected limit search to selection, otherwise
+    //     // search for all child criteria.
+    //     if (!(childFilters))
+    //         return [...filters, ...children];
+    //     else
+    //         return [...filters]
+    // }
 
-    // Convert the index into a checkbox name
-    function getChildrensName(children) {
-        let ch = [];
-        children.map(child => ch.push(getCheckboxName(child)));
-        return ch;
-    }
 
-    //console.log("!!!!!GETTING DATA");
     let results = getData(props.data);
 
     return(
@@ -162,7 +139,7 @@ export function FilterForm(props) {
             <Container maxWidth="lg" className={classes.root}>
                 <React.Fragment>
                     <form onSubmit={(e) => handleDisplay(e)}>
-                        <div className={classes.root} className="App">
+                        <div className={classes.root} >
                             <AppBar>
                                 <Toolbar className={classes.toolbar}>
                                     <Grid justify="space-between"
@@ -170,15 +147,15 @@ export function FilterForm(props) {
                                         <Grid item>
                                             <Typography
                                                 variant="h2"
-                                            >Check Tests Results
+                                            >Test Profile Download Status
                                             </Typography>
+                                            {lastDownload ?
                                             <Typography
-                                                variant="h4"
-                                            >A visual tool to display the current state of test profiles.
-                                            </Typography>
+                                            >Last Download: {lastDownload}
+                                            </Typography> : null}
                                         </Grid>
                                         <Grid item>
-                                            <PTSHelp />
+                                            <PTSHelp/>
                                         </Grid>
                                     </Grid>
                                 </Toolbar>
@@ -188,47 +165,38 @@ export function FilterForm(props) {
                         <Grid  container>
                             <Grid style={{marginTop:"4rem"}} item xs={12}>
                                 
-                                <Grid container item xs={12}
-                                    // style={{marginTop:"2em"}}
-                                    // justify="flex-start"
-                                    // alignItems="flex-start"
-                                    // spacing={1} 
-                                    // direction="row"
-                                    >
+                                <Grid container item xs={12}>
 
                                     <Checkboxes {...checkboxes} displayLegend={legend} />
+
                                     <Grid item xs={3}>
-                                        {/* <Paper style={{marginTop:"2em"}} className={classes.paper}>XXXGrid 4-1</Paper> */}
                                         <TextField
                                             value={searchValue}
                                             label="Profile Name"
-                                            variant="filled"
+                                            variant="standard"
                                             size="small"
                                             color="primary"
-                                            InputLabelProps={{
-                                                shrink: true,
-                                                }}
+                                            style={{marginTop:'0.5em'}}
+                                            InputLabelProps={{shrink: true}}
                                             InputProps={{
                                                 startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment>,
                                                 endAdornment: <InputAdornment position="end"><ClearIcon style={{cursor:'default'}} onClick={handleClearSearch}/></InputAdornment>,
-                                                disableUnderline: true,
+                                                // disableUnderline: true,
                                                 className: classes.searchField
 
                                             }}
-                                           
                                             onChange={(e) => setSearchValue(e.target.value)}   
                                         />      
                                     </Grid>
                                     <Grid item xs={5}>
-                                        {/* <Paper style={{marginTop:"2em"}} className={classes.paper}>XXXGrid 4-2</Paper> */}
                                         <FormControlLabel
                                                 control={
-                                                <Checkbox
-                                                    checked={legend.checked}
-                                                    onChange={handleLegend}
-                                                    name="legend"
-                                                    color="primary"
-                                                />
+                                                    <Checkbox
+                                                        checked={legend.checked}
+                                                        onChange={handleLegend}
+                                                        name="legend"
+                                                        color="primary"
+                                                    />
                                                 }
                                                 label="Display Legend"
                                             />
@@ -250,7 +218,7 @@ export function FilterForm(props) {
                             <Table stickyHeader className={classes.borders}>
                                 <TableHead>
                                     <TableRow className={classes.tableHeader}>
-                                        <TableCell><Typography className={classes.profileName} color='primary'> Results: {results.length}</Typography></TableCell>
+                                        <StyledTableCell colSpan={3}><Typography className={classes.resultsRow} color='primary'> Results: {results.length}</Typography></StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody className={classes.borders}>

@@ -38,7 +38,7 @@ cleanUp() {
     if [ -e ${PHORONIX_LOCAL}/check-tests-tested.txt ]
     then
         echo -e "Removing cached tests and temporary files ..."
-        #PROD(remove echo above also) - rm ${PHORONIX_LOCAL}/check-tests-tested.txt
+        rm ${PHORONIX_LOCAL}/check-tests-tested.txt
     fi
 
     # any files with the format xxx.json.1234 are files left over from cancelled processes

@@ -3,15 +3,18 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Radio from '@material-ui/core/Radio';
 import Grid from '@material-ui/core/Grid';
 import { FormControlLabel } from '@material-ui/core';
+
 import {getCheckboxColor} from './PTSSignifier';
-
-
-
-
 import * as Constants from "../Constants";
 import useStyles from "./styles";
+//import Checkboxes from './Checkboxes';
 
-// List of checkboxes that can be applied to the JSON data to extract results
+// Developer Note: Originally there were checkboxes. In the second iteration, radio buttons
+// were introduced but referred to as checkboxes to reuse functionality.
+// If reworked, this component should be renamed to Filters but for now interpret
+// both checkboxes and radio buttons as filters.
+
+// List of filters that can be applied to the JSON data to extract results
 const checkboxList = [
   {filter: Constants.ALL}, 
   {filter: Constants.LATEST},
@@ -29,10 +32,9 @@ const checkboxList = [
   {filter: Constants.NONE},  
 ];
 
-// Takes the filter list and sets default properties to create checkboxes
+// Takes the filter list and sets default properties to create, name and set checkboxes
 const getDefaultCheckboxes = () =>
   checkboxList.map((box, index) => { 
-    //console.log(checkboxList);
     const {idx, name, checked, desc, disabled} = box.filter;
     return ({
       idx, 
@@ -45,50 +47,21 @@ const getDefaultCheckboxes = () =>
       competes: ("competes" in box.filter) ? box.filter.competes : null,
 })});
 
+/**
+ * Returns name of checkbox based on the checkbox index value
+ * @param {} index  Checkbox index value ie Constants.ALL.idx
+ * @returns Checkbox name defined by name key in Object ie Constants.ALL.name
+ */
 export function getCheckboxName(index) {
   return checkboxList.filter(cb => cb.filter.idx === index)[0].filter.name;  
 }
-export function getCheckbox(index) {
-  return checkboxList.filter(cb => cb.filter.idx === index)[0].filter;  
-}
 
-// export function createLegend(classes) {
-//     return (<>  
-//       <Grid item container direction="column" >
-//       {/* <Paper className={classes.paper}>item 0</Paper> */}
-
-//           <Grid item >  
-//             <Grid container>
-//               <Grid item xs={12} sm={6} md={6} lg={6}>
-//                   {/* <Paper className={classes.paper}>item 1</Paper> */}
-//                   <Typography>Failed Errors</Typography>
-//                   {getLegend([Constants.COLOR_MD5], 'MD5 Error')}
-//                   {getLegend([Constants.COLOR_SHA], 'SHA256 Error')}
-//                   {getLegend([Constants.COLOR_301], 'Redirect 301 Error')}
-//                   {getLegend([Constants.COLOR_302], 'Redirect 302 Error')}
-//                   {getLegend([Constants.COLOR_TIMEOUT], 'Download Timed Out')}
-//                   {getLegend([Constants.COLOR_404], 'Not Found 404 Error')}
-//                   {getLegend([Constants.COLOR_HTTP_0], 'HTTP 0 Error')}
-//                </Grid>
-//                <Grid item xs={12} sm={6} md={6} lg={6}>
-//                   {/* <Paper className={classes.paper}>item 2</Paper> */}
-//                   {/* Use Box element to make it bold */}
-//                   <Typography fontWeight='fontWeightBold'>Profile Status</Typography> 
-//                   <Typography className={classes.profileName} color={getProfileColor(Constants.COLOR_PASS,false)}>Profile Passed</Typography>
-//                   <Typography className={classes.profileName} color={getProfileColor(Constants.COLOR_FAIL, false)}>Profile has failures</Typography>
-//                   <Typography className={classes.profileName} color={getProfileColor(Constants.COLOR_WARNING, false)}>Profile has potential failures</Typography>
-//                   <Typography className={classes.profileName} color={getProfileColor(Constants.COLOR_FATAL, false)}>All mirrors failed</Typography>
-//               </Grid>
-//             </Grid>
-//           </Grid>
-//       </Grid>
-//     </>)
-// }
 /**
  * Determines the state of the various checkboxes defined in the filterList.
- *  The combination of these checkboxes will be used to determing the checkboxes to apply to the JSON values
+ * The combination of these checkboxes will be used to determine the filters to apply to the JSON values
  * @param defaultCheckboxes 
  * @return all the checkboxes and their current state
+ * 
  */
 export function useCheckboxes(defaultCheckboxes) {
   const [checkboxes, setCheckboxes] = useState(
@@ -117,22 +90,21 @@ export function useCheckboxes(defaultCheckboxes) {
           }
 
           // Disable the fields that do not align with the current selection
-          //console.log("hide");
           if ("hide" in currBox && currBox.hide !== null) {
-            //console.log("hide",  box);
             if (currBox.hide.includes(box.idx))
                box.disabled = currBox.checked;
           }
         }
 
         // if the box is a child of the current selection, match the parent state
-        // ie disable and uncheck all children (MD5 and SHA) of the parent (Fails)
+        // ie disable and uncheck all children (MD5 and SHA) of the parent (Failed)
         if ("children" in currBox && currBox.children !== null){
           if (currBox.children.includes(box.idx)) {
             box.disabled = !currBox.checked;
             if (box.disabled) {
               box.checked = false;
-              // Check if the childbox has children also (only 3 layers, otherwise use recursion)
+
+              // Check if the parent has children also (only 2-3 layers, otherwise use recursion)
               if (box.children !== null) {
                 box.children.forEach(index => {
                   checkboxes[index].checked = false;
@@ -147,7 +119,12 @@ export function useCheckboxes(defaultCheckboxes) {
   }
 
   
-  // Sets the state of a specific checkbox
+  /**
+   * Set and manage the state when a checkbox/filter is selected
+   * 
+   * @param {*} index   Index of the checkbox/filter selected ie Constants.ALL.idx
+   * @param {*} checked Boolean, true if selected
+   */
   function setCheckbox(index, checked) {
     manageState(index,checked);
     const newcheckboxes = [...checkboxes];
@@ -163,16 +140,15 @@ export function useCheckboxes(defaultCheckboxes) {
 }
 
 /**
- * Radio works same as createCheckboxes, except from UI perspective it provide an OR functionality
- * @param {*} classes 
- * @param {*} checkboxes 
- * @param {*} setCheckbox 
- * @param {*} index 
- * @returns 
+ * Radio works same as createCheckboxes, except from UI perspective it provides an OR functionality
+ * @param {*} classes     The styles to be applied
+ * @param {*} checkboxes  The list of filters
+ * @param {*} setCheckbox checkboxes state callback
+ * @param {*} index       Index of the given checkbox ie Constants.ALL.idx
  */
 const createRadio = (classes, checkboxes, setCheckbox, index) => {
   const chCol = getCheckboxColor(index);
-  //console.log("!!!CreateRadio", index, checkboxes);
+
   return (
     <>
       <FormControlLabel 
@@ -198,19 +174,15 @@ const createRadio = (classes, checkboxes, setCheckbox, index) => {
   )
 }
 
-// const getLegend = (colIdx, colName) => {
-//   //console.log("++++", colName);
-//   return (
-//     <Grid item container="row">
-//       <Grid item><PTSSignifier colorStatus={colIdx}/></Grid>
-//       <Grid item style={{marginLeft:'1em'}}><Typography>{colName}</Typography></Grid>
-//     </Grid>
-//   );
-// }
-
+/**
+ * Create and display the checkboxes on the UI
+ * @param {*} classes     The styles to be applied
+ * @param {*} checkboxes  The list of filters
+ * @param {*} setCheckbox checkboxes state callback
+ * @param {*} index       Index of the given checkbox ie Constants.ALL.idx
+ */
 function createCheckbox(classes, checkboxes, setCheckbox, index) {
   const chCol = getCheckboxColor(index);
-  //console.log("!!!Loading", index, checkboxes[index]);
   return (
     <>
       <FormControlLabel
@@ -233,17 +205,19 @@ function createCheckbox(classes, checkboxes, setCheckbox, index) {
   );
 }
 
-function Checkboxes({ checkboxes, setCheckbox, displayLegend}) {
+/**
+ * Create the filters to be displayed on the UI
+ * @param {*} checkbox state hook
+ * @returns Fragment detailing filters to be displayed on UI
+ */
+function Checkboxes({ checkboxes, setCheckbox}) {
   const classes =useStyles();
-  //console.log("!!!!In Checkboxes, legend", displayLegend );
 
   return (
     <React.Fragment>
 
       <Grid item xs={12} sm={6} md={2} lg={2}>
-          {/* <Paper style={{marginTop:"2em"}} className={classes.paper}>XXXGrid 3-21</Paper> */}
           <Grid container direction="column" >
-            {/* <Paper style={{marginTop:"2em"}} className={classes.paper}>XXXGrid 3-22</Paper> */}
             <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.ALL.idx)}</Grid>
             <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.LATEST.idx)}</Grid>
             <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.FAILED.idx)}</Grid>
@@ -252,11 +226,9 @@ function Checkboxes({ checkboxes, setCheckbox, displayLegend}) {
           </Grid>
       </Grid>
       <Grid item xs={12} sm={6} md={2} lg={2}>
-         {/* <Paper style={{marginTop:"2em"}} className={classes.paper}>XXXGrid 3-23</Paper> */}
          {checkboxes[Constants.FAILED.idx].checked ?
             (<>
               <Grid container direction="column" >
-                {/* <Paper style={{marginTop:"2em"}} className={classes.paper}>XXXGrid 3-24</Paper> */}
                 <Grid>{createRadio(classes, checkboxes, setCheckbox, Constants.CHECKSUM.idx)}</Grid>
                 <Grid>{createRadio(classes, checkboxes, setCheckbox, Constants.REDIRECTS.idx)}</Grid>
                 <Grid>{createRadio(classes, checkboxes, setCheckbox, Constants.DOWNLOAD.idx)}</Grid>
@@ -264,119 +236,6 @@ function Checkboxes({ checkboxes, setCheckbox, displayLegend}) {
               </Grid></>
               ) : null}
       </Grid>
-      {/* <Grid item xs={3}>
-          <Paper style={{marginTop:"2em"}} className={classes.paper}>XXXGrid 4-1</Paper>
-      </Grid>
-      <Grid item xs={3}>
-         <Paper style={{marginTop:"2em"}} className={classes.paper}>XXXGrid 4-2</Paper>
-      </Grid> */}
-
-
-        {/* <Grid item xs={12} sm={3} md={2} lg={2}>
-          <Paper className={classes.paper}>item box 1</Paper>
-
-          <Grid container direction="column" >
-            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.ALL.idx)}</Grid>
-            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.LATEST.idx)}</Grid>
-            <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.FAILED.idx)}</Grid>
-            <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.NOT_TESTED.idx)}</Grid>
-
-          </Grid>
-        </Grid> */}
-
-        {/* {checkboxes[Constants.FAILED.idx].checked ?
-          (<Grid item xs={12} sm={3} md={3} lg={2}>
-           
-            <Grid container direction="column" >
-                <Grid item container="row" justify="center" alignItems="center" >
-                  <Grid item xs={9}>{createRadio(classes, checkboxes, setCheckbox, Constants.CHECKSUM.idx)}</Grid>
-                  <Grid item xs={9}>{createRadio(classes, checkboxes, setCheckbox, Constants.REDIRECTS.idx)}</Grid>
-                  <Grid item xs={9}>{createRadio(classes, checkboxes, setCheckbox, Constants.DOWNLOAD.idx)}</Grid>
-                  <Grid item xs={9}>{createRadio(classes, checkboxes, setCheckbox, Constants.NONE.idx)}</Grid>
-                </Grid> */}
-
-                  
-             
-              {/* <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.CHECKSUM.idx)}</Grid> */}
-              {/* <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.REDIRECTS.idx)}</Grid> */}
-              {/* <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.DOWNLOAD.idx)}</Grid> */}
-            {/* </Grid>
-          </Grid>) : null} */}
-
-        {/* {checkboxes[Constants.CHECKSUM.idx].checked ?
-          (<Grid item xs={12} sm={3} md={3} lg={2}>
-            <Grid container direction="column" style={{padding:'2px', marginTop:'0.5em'}}>
-              {getLegend([Constants.COLOR_MD5], 'MD5 Error')}
-              {getLegend([Constants.COLOR_SHA], 'SHA256 Error')} */}
-             
-              {/* <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.MD5.idx)}</Grid> */}
-              {/* <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.SHA.idx)}</Grid> */}
-            {/* </Grid>
-          </Grid>): null} */}
-
-        {/* {checkboxes[Constants.REDIRECTS.idx].checked ?
-          (<Grid item xs={12} sm={3} md={3} lg={2}>
-            <Grid container direction="column" >
-              {getLegend([Constants.COLOR_301], 'HTTP 301 Error')}
-              {getLegend([Constants.COLOR_302], 'HTTP 302 Error')} */}
-
-              {/* <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.R301.idx)}</Grid>
-              // <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.R302.idx)}</Grid> */}
-            {/* </Grid>
-          </Grid>): null} */}
-
-          {/* {checkboxes[Constants.DOWNLOAD.idx].checked ?
-          (<Grid item xs={12} sm={3} md={3} lg={2}>
-            <Grid container direction="column" >
-                {getLegend([Constants.COLOR_TIMEOUT], 'HTTP 0 or timeout')}
-                {getLegend([Constants.COLOR_404], 'HTTP 404 Error')}
-                {getLegend([Constants.COLOR_HTTP_0], 'HTTP 0 Error')} */}
-
-              {/* <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.TIMED_OUT.idx)}</Grid> */}
-              {/* <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.NOT_FOUND.idx)}</Grid> */}
-            {/* </Grid>
-          </Grid>): null} */}
-
-          {/* {(checkboxes[Constants.FAILED.idx].checked && checkboxes[Constants.NONE.idx].checked )?
-          (
-          
-            <Grid item xs={12} sm={3} md={3} lg={2}>
-            <Grid container direction="column" >
-                {getLegend([Constants.COLOR_MD5], 'MD5 Error')}
-                {getLegend([Constants.COLOR_SHA], 'SHA256 Error')}
-                {getLegend([Constants.COLOR_301], 'HTTP 301 Error')}
-                {getLegend([Constants.COLOR_302], 'HTTP 302 Error')}
-                {getLegend([Constants.COLOR_TIMEOUT], 'HTTP 0 or timeout')}
-                {getLegend([Constants.COLOR_404], 'HTTP 404 Error')}
-                {getLegend([Constants.COLOR_HTTP_0], 'HTTP 0 Error')} */}
-
-              {/* <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.TIMED_OUT.idx)}</Grid> */}
-              {/* <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.NOT_FOUND.idx)}</Grid> */}
-            {/* </Grid>
-
-          </Grid>): null} */}
-
-          {/* {displayLegend ?
-          (<>
-            <Grid item xs={12} sm={3} md={3} lg={2}></Grid>
-          
-            <Grid item xs={12} sm={3} md={3} lg={2}>
-            <Grid container direction="column" >
-                {getLegend([Constants.COLOR_MD5], 'MD5 Error')}
-                {getLegend([Constants.COLOR_SHA], 'SHA256 Error')}
-                {getLegend([Constants.COLOR_301], 'HTTP 301 Error')}
-                {getLegend([Constants.COLOR_302], 'HTTP 302 Error')}
-                {getLegend([Constants.COLOR_TIMEOUT], 'HTTP 0 or timeout')}
-                {getLegend([Constants.COLOR_404], 'HTTP 404 Error')}
-                {getLegend([Constants.COLOR_HTTP_0], 'HTTP 0 Error')} */}
-
-              {/* <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.TIMED_OUT.idx)}</Grid> */}
-              {/* <Grid item >{createCheckbox(classes, checkboxes, setCheckbox, Constants.NOT_FOUND.idx)}</Grid> */}
-            {/* </Grid>
-
-          </Grid></>): null} */}
-
-
     </React.Fragment>
   );
 }

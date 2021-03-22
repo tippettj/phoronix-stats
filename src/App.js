@@ -7,14 +7,13 @@ import useStyles from './components/styles';
 import {mapData, getLatestVersion} from '../src/processData.js';
 
 function App() {
-  //const apiEndPoint = "check-tests-results.json";   
   const apiEndPoint = "check-tests-results.json";   
 
-
   const classes = useStyles();
-
   const [data,setData]=useState([]);
   const [loading, setLoading] = useState(true);
+  const [lastModified, setLastModified] = useState(null);
+
 
   // UseEffect runs when component mounts and also when it updates
   // Since we are changing the state of data, it will run again and again unless we set the second arg to [].
@@ -22,6 +21,8 @@ function App() {
   useEffect(()=> {
      const getData = async () => {
         const result = await axios(apiEndPoint);
+        setLastModified(result.headers['last-modified']);
+
         // Map all versions of a profile
         let mappedData = mapData(result.data);
 
@@ -34,20 +35,17 @@ function App() {
           latest : mappedLatestData
         };
         
-
-        //console.log("!!!!UseEffect mappedData", map);
         setData(map);
         setLoading(false);
     }
-
+    
     getData();
 
   },[])
 
-
   return (
     <div className={classes.root}>
-      {loading ? <LinearProgress  className={classes.progressBar}/> : <FilterForm data={data}/> } 
+      {loading ? <LinearProgress  className={classes.progressBar}/> : <FilterForm data={data} lastDownload={lastModified}/> } 
     </div>
   );
 

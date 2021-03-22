@@ -37,14 +37,6 @@ export const COLOR_REDIRECT=16
 export const COLOR_DOWNLOAD=17
 export const COLOR_NO_CATEGORY=18
 
-
-
-
-
-
-
-
-
 /**
  * To enable a checkbox:
  * 1. Declare a constant IDX as above
@@ -66,7 +58,6 @@ export const COLOR_NO_CATEGORY=18
  * 3. Checkboxes.js
         1. Add the checkbox to the const checkboxList
         2. Add the checkbox as a GridItem in the function Checkboxes()
-        3. Add a displaySelection function call in the function manageState()
  * 4. When the checkbox is selected, it will automatically be added to the filter selection in FilterForm.getData()
  */
 
@@ -200,17 +191,6 @@ export const R302 = {
     desc: "Displays all test profiles with a HTTP Status of 302",
 }
 
-// export const HTTP_404 = {
-//     name: "HTTP 404 Error",
-//     idx: HTTP_404_IDX,
-//     checked: false,
-//     disabled: true,
-//     desc: "Displays all test profiles with a HTTP Status of 404",
-// }
-
-
-
-
 // JSON
 export const JSON_FAILED = "Failed";    
 export const JSON_FAILURES = "Failures"; 
@@ -231,7 +211,6 @@ export const JSON_404="404";
 export const HTTP_0=0; // ftp download timeout
 export const HTTP_301=301;
 export const HTTP_302=302;
-//export const HTTP_404=404; // not found
 
 
 
