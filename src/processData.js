@@ -54,11 +54,6 @@ function mapData(data) {
                                 //console.log("+301");
                                 mirrorColor=[...mirrorColor, Constants.COLOR_301];
                                 redirectError = true;
-
-                                // Ok - as per requirements, a 301 is not necessarily a failure so we will change the status
-                                // from a failure to a pass however it will still be tagged with a 301 error.
-                                //mirror.status = "Warning";
-                                //console.log(packs['identifier'], " rewritten to be a pass");
                             }
 
                             if (data[Constants.JSON_HTTP_CODE] !== undefined  && data[Constants.JSON_HTTP_CODE].toString() === "302") {
@@ -86,7 +81,6 @@ function mapData(data) {
                               data[Constants.JSON_HTTP_CODE].toString() === "404" ||
                               data[Constants.JSON_HTTP_CODE].toString() === "301" ||
                               data[Constants.JSON_HTTP_CODE].toString() === "302")) {
-                                //console.log("+http", data[Constants.JSON_HTTP_CODE]);
                                 mirrorColor=[...mirrorColor, Constants.COLOR_HTTP];
                                 downloadError = true;
                             }
@@ -96,7 +90,7 @@ function mapData(data) {
 
                         // Not Tested
                         if (mirror.status === Constants.JSON_NOT_TESTED) {
-                            //console.log("+notTested");
+                            console.log("+notTested", profile);
                             mirrorColor = [Constants.COLOR_NOT_TESTED];
                             notTested = true;
                         } else {
@@ -116,10 +110,7 @@ function mapData(data) {
                 return packs;   
             })
 
-            //console.log("Profile color", profileColor);
-            //let cleanProf = new Set(profileColor);
             profile.colorStatus = Array.from( new Set(profileColor) );
-            //console.log(profile['profile-name'], profile.colorStatus);
 
             if (notTested)
                 dataMap.notTested.push(profile);
@@ -137,6 +128,9 @@ function mapData(data) {
 
             // if (failError || checksumError || redirectError || downloadError || timeError || notTested)
             //     console.log("data map", dataMap);
+
+             if ( notTested)
+                console.log("data map", dataMap);
 
             return profile;
        
@@ -471,13 +465,15 @@ function getDownloadFailures(mirror, searchFilters, packs) {
  * @return {name, version}  {pts/apache, 1.2.1}
  */
 function getProfileNameAndVersion(profileName) {
-    const vpattern = /-\d.*/g;
-    const npattern = /.*-/g;
+    console.log("profileName", profileName);
+    const version_regex = /-\d.\d.*/g;
+    const name_regex = /.*-/g;
 
-    let matched = profileName.match(npattern)[0];  //match returns array
-    let name = matched.slice(0, matched.length-1);
-    matched = profileName.match(vpattern)[0];
-    let version = matched.slice(1);
+    let name_match = profileName.match(name_regex)[0];  //match returns array
+    let name = name_match.slice(0, name_match.length-1);
+    
+    let version_match = profileName.match(version_regex)[0];
+    let version = version_match.slice(1);
 
     return {profileName, name, version};
 }
@@ -506,6 +502,7 @@ function getLatestVersion(data) {
                 profiles.push(profile);
             } else {
                 // If the profile does exist, store the lastest version
+                console.log("!!!!details", profileDetails);
                 if (semver.gt(profileDetails.version, profiles[idx].version)) {
                     profile.versions = [...profiles[idx].versions, profile.version];
                     profiles[idx] = profile;
