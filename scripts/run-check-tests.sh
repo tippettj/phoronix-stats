@@ -57,11 +57,42 @@ cleanUp() {
 
 }
 
+# Push the JSON file to the gh-pages repository
+pushJSON() {
+    if [ -e ${PHORONIX_LOCAL_JSON} ] 
+        then
+            echo -e "${CYAN}Checking out gh-pages branch from git repository ${GIT_USER}phoronix-stats ...${NC}"
+            if [ -d ${TEMP_GH_PAGES_DIR} ]
+            then
+                rm -rf ${TEMP_GH_PAGES_DIR}
+            fi
+
+            mkdir -p ${TEMP_GH_PAGES_DIR}
+            cd ${TEMP_GH_PAGES_DIR}
+            git clone git@github.com:${GIT_USER}/phoronix-stats.git
+            cd ${TEMP_GH_PAGES_DIR}/phoronix-stats
+            git checkout gh-pages
+            cp ${PHORONIX_LOCAL_JSON} ${TEMP_GH_PAGES_DIR}/phoronix-stats
+
+            echo -e "${CYAN}Pushing new JSON file to gh-pages branch in ${GIT_USER}/phoronix-stats${NC}"
+            git add ${JSON_FILE}
+            git commit -m "Automated check-tests run on `(date +%F)`"
+            git push 
+
+            rm -rf ${TEMP_GH_PAGES_DIR}
+        else    
+            echo -e "${RED}Test Failed. Unable to locate ${JSON_FILE}${NC}"
+        fi
+
+        exit 1;
+}
+
 #  Read any arguments
 while getopts 'dhcs:' flag; do
   case "${flag}" in
     d) DEV_MODE="true" ;;
     c) cleanUp ;;
+    p) pushJSON ;;
     h) 
         echo " "
         echo "NAME"
@@ -77,6 +108,7 @@ while getopts 'dhcs:' flag; do
         echo "      -h        show help"
         echo "      -d        run in DEV MODE. Named test-profiles will only run in DEV MODE"
         echo "      -c        clean up"
+        echo "      -p        push json file to gh-pages"
         echo " "
        exit 1 ;;
   esac
@@ -144,6 +176,9 @@ then
         else    
             echo -e "${RED}Test Failed. Unable to locate ${JSON_FILE}${NC}"
         fi
+
+        # if we have sucessfully created a JSON results file, push it to github
+        pushJSON;
         
     else
         echo -e "${RED}Unable to pull latest -  .git folder does not exist in ${PHORONIX_ROOT} ${NC}"

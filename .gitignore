@@ -24,3 +24,5 @@ yarn-debug.log*
 yarn-error.log*
 public/check-tests-results-full.json
 public/check-tests-reworked.json
+public/check-tests-results.json
+public/check-tests-results.json
