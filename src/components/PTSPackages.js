@@ -35,7 +35,6 @@ const PTSPackages = props => {
             status = (<span>{props.status}</span>);     
         } else {
             status = props.map((mir, key) => {
-                //console.log("+++mir", mir);
                 return <PTSMirrors  key={key} identifier={identifier} data={mir} idx={key}/>
             })
         }

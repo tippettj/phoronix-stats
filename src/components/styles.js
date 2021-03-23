@@ -9,6 +9,8 @@ export const useStyles = makeStyles(() => ({
       marginBottom: "3em",
       flexGrow: 1,
     },
+
+    // Displays before page loads
     progressBar: {
       color: theme.palette.secondary.main,
       position: "relative",
@@ -17,7 +19,6 @@ export const useStyles = makeStyles(() => ({
 
     // Clear Button
     button: {
-        //background: 'linear-gradient(45deg, #285F80 29%, #333333 81% )',
         background: theme.palette.primary.main,
         color: theme.palette.primary.contrastText,
         fontWeight: theme.typography.fontWeightBold,
@@ -27,47 +28,51 @@ export const useStyles = makeStyles(() => ({
         fontSize: 12,
         marginTop: "0.5em"
     },
-    
     toolbar: {
-      //background: 'linear-gradient(45deg, #285F80 29%, rgba(51,51,51,95) 91% )',
       background: theme.palette.primary.main,
       padding: '1em',
     },
+
+    // Contains the Legend Details
     paper: {
       padding: theme.spacing(2),
       margin: "1rem 1rem 1rem 0rem",
       textAlign: "left",
       color: theme.palette.text.secondary,
-      height: "220px",
+      height: "240px",
     },
+
     // keep for debugging
     borders: {
         borderWidth: 1,
         borderColor: "black",
         borderStyle: "solid", 
     },
-   
+
     // checkboxes tool tip
     checkboxTip: {
-      // backgroundColor: theme.palette.common.white,
       color: theme.palette.common.black,
       fontSize: "48!important",
     },
     tableHeader: {
       backgroundColor: theme.palette.grey[200],
     },
+
     // Rows containing the profile Name
     profileNameRow: {
       backgroundColor: theme.palette.grey[200],
       '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.grey[100],
       },
-      //backgroundColor: "#CCD1D1", //light grey
-      //backgroundColor: "rgba(227,224,224, 5)", //light grey
-      //backgroundColor: "#FFFFFF", //light grey
-      //backgroundImage: 'linear-gradient(90deg, rgba(227,224,224, 5) 0%, rgba(126,159,178,1) 98%)',
     },
 
+    // Cell which displays the number of results
+    resultsRow:{
+      padding: "0.5rem",
+      fontWeight: theme.typography.fontWeightBold,
+      backgroundColor: theme.palette.grey[300],
+    },
+    
     // Profile Name titles
     profileName:
     {
@@ -94,20 +99,17 @@ export const useStyles = makeStyles(() => ({
 
     // Rows containing package Names Details FileName/FileSize
     packageNameRow: {
-      //backgroundColor: "#d6dada",  
       backgroundColor: theme.palette.grey[100],
 
     },
 
     // Rows containing mirror details ie Status/Duplicate/Failures
     mirrorRow: {
-      //backgroundColor: "#d6dada",
       backgroundColor: theme.palette.grey[100],
     },
 
     // Rows containing failure details ie MD5/SHA246
     failureRow: {
-      //backgroundColor: "#d6dada",
       backgroundColor: theme.palette.grey[100],
     },
 
@@ -155,8 +157,6 @@ export const useStyles = makeStyles(() => ({
  },
     //TextField details
     searchField: {
-      //backgroundColor: "#d7d8da", // a bit darker then #d3d5d8
-      //backgroundColor: "#d3d5d8",
       backgroundColor: theme.palette.background.textfield,
       marginTop:"0.5em",
     },
@@ -169,7 +169,7 @@ export const useStyles = makeStyles(() => ({
     },
 
     helpIcon: {
-      color: theme.palette.warning.dark,
+      color: theme.palette.secondary.light,
     }
     
   }));

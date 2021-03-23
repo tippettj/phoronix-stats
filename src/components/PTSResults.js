@@ -1,7 +1,6 @@
 import React from 'react';
 import PTSProfile from './PTSProfile';
 
-
 /**
  * Displays the results based on the filters(checkboxes) selected.
  * @param props the results to be displayed. Note the filters have already been applied.

@@ -9,14 +9,11 @@ import useStyles from "./styles";
 import PTSSignifier from './PTSSignifier';
 import * as Constants from '../Constants';
 
-
-
-
 export default function PTSHelp() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();                        
 
-
+  // Hide/Display the Help Information
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,7 +27,6 @@ export default function PTSHelp() {
 
   return (
     <>
-        {/* <IconButton aria-describedby={id} style={{color:"white"}}  onClick={handleClick}> */}
         <IconButton aria-describedby={id} className={classes.helpIcon}  onClick={handleClick}>
             <HelpIcon/>
         </IconButton>
@@ -47,8 +43,7 @@ export default function PTSHelp() {
             transformOrigin={{
                 vertical: 'top',
                 horizontal: 'center',
-            }}
-            
+            }}    
         >
             <Box margin='1em'>
                 <Typography variant="h6"> 

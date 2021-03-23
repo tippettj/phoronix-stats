@@ -12,9 +12,7 @@ export const DOWNLOAD_IDX = 9;
 export const NOT_FOUND_IDX = 10;
 export const R301_IDX = 11;
 export const R302_IDX = 12;
-//export const HTTP_404_IDX = 13;
 export const NONE_IDX = 13;
-
 
 //Colors
 export const COLOR_NEUTRAL=0
@@ -204,8 +202,6 @@ export const JSON_ERROR="error";
 export const JSON_HTTP_301="301";
 export const JSON_HTTP_302="302";
 export const JSON_404="404";
-
-
 
 // HTTP Code Errors that are being tracked
 export const HTTP_0=0; // ftp download timeout

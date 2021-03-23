@@ -11,8 +11,8 @@ import {theme} from './theme';
 import * as Constants from "../Constants";
 
 /** Determine the color of the signifier based on the nature of the error.
- * @param   color   The status color ie Constants.COLOR_PASS
- * @returns col     A theme based color for the status color
+ * @param {Integer} color   The status color based on the severity of the error ie a 404 is error while a 302 is info
+ * @returns {String}        A theme based color for the status color
  */
 export function getStatusColor(color){
     let col;
@@ -52,7 +52,7 @@ export function getStatusColor(color){
             col = theme.palette.warning.main;
             break;
         case Constants.COLOR_302:
-            col = theme.palette.info.main;
+            col = theme.palette.pass.main;
             break;
         
         default:
@@ -63,11 +63,12 @@ export function getStatusColor(color){
 }
 
 /**
- * 
- * @param {'*'} stat    The status category ie checksum, redirect, downloads
-  * @param {*} col       The color of the icon    
- * @param {*} key 
- * @returns 
+ * Determines the icon to display based on the nature of the error.
+ * Error can be either: Checksum, Download, Redirect, Not Tested or Undefined ie a HTTP 226 error
+ * @param {Integer} stat    The error as defined by Constants.COLOR_*
+* @param {Integer}  col     The color of the icon based on the severity of the error type. See getStatusColour()
+ * @param {Integer} key     Key required bt react map fn
+ * @returns Icon Component representing error
  */
 export function getIconShape(stat,col,key){
     let shape;
@@ -136,7 +137,11 @@ export function getCheckboxColor(index){
     return col;
 }
 
-
+/**
+ * Iterates though each status and returns the appropriate Signifier
+ * @param {Array} status Error Status ie Constants.COLOR_301
+ * @returns Icon component with shape and color reflecting error status
+ */
 const getTestSignifiers = (status) => {
     let signifier = null;
     
@@ -158,7 +163,7 @@ const getTestSignifiers = (status) => {
 
 /**
  * 
- * @param {*} props colorStatus an array or single index representing
+ * @param {Object} props colorStatus an array or single index representing
  * @returns 
  */
 export default function PTSSignifier(props) {

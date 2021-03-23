@@ -7,14 +7,11 @@ import TableRow from '@material-ui/core/TableRow';
 
 import startCase from 'lodash/startCase';
 
-
 import Failures from './PTSFailures';
 import * as Constants from "../Constants";
 import StyledTableCell from './StyledTableCell';
 import useStyles from "./styles";
 import PTSSignifier from './PTSSignifier';
-
-
 
 /**
  * Displays the data that falls under the mirror array. 
