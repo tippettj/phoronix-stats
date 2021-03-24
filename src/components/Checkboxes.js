@@ -186,21 +186,21 @@ function createCheckbox(classes, checkboxes, setCheckbox, index) {
   return (
     <>
       <FormControlLabel
-        control={<>
-          {/* // <Tooltip arrow enterNextDelay={2000} className={classes.checkboxTip} title={checkboxes[index].desc}> */}
-          <Checkbox
-            className={classes.checkboxes}
-            disabled={checkboxes[index].disabled}
-            style={{ '&:hover': { backgroundColor: "transparent" }, color: chCol }}
-            checked={checkboxes[index].checked}
-            onChange={e => { setCheckbox(checkboxes[index].idx, e.target.checked); } } />
-        </>
+        control={
+          <>
+            {/* // <Tooltip arrow enterNextDelay={2000} className={classes.checkboxTip} title={checkboxes[index].desc}> */}
+            <Checkbox
+              className={classes.checkboxes}
+              disabled={checkboxes[index].disabled}
+              style={{ '&:hover': { backgroundColor: "transparent" }, color: chCol }}
+              checked={checkboxes[index].checked}
+              onChange={e => { setCheckbox(checkboxes[index].idx, e.target.checked); } } />
+          </>
           //  </Tooltip>
         }
         label={checkboxes[index].name}
         disabled={checkboxes[index].disabled} />
       {/* <PTSSignifier colorStatus={index}/> */}
-
     </>
   );
 }
@@ -216,7 +216,7 @@ function Checkboxes({ checkboxes, setCheckbox}) {
   return (
     <React.Fragment>
 
-      <Grid item xs={12} sm={6} md={2} lg={2}>
+      <Grid item xs={12} sm={3} md={2} lg={2}>
           <Grid container direction="column" >
             <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.ALL.idx)}</Grid>
             <Grid item>{createCheckbox(classes, checkboxes, setCheckbox, Constants.LATEST.idx)}</Grid>
@@ -225,10 +225,10 @@ function Checkboxes({ checkboxes, setCheckbox}) {
 
           </Grid>
       </Grid>
-      <Grid item xs={12} sm={6} md={2} lg={2}>
+      <Grid item xs={12} sm={3} md={2} lg={2}>
          {checkboxes[Constants.FAILED.idx].checked ?
             (<>
-              <Grid container direction="column" >
+              <Grid className={classes.failed_checkbox_margins} container direction="column" >
                 <Grid>{createRadio(classes, checkboxes, setCheckbox, Constants.CHECKSUM.idx)}</Grid>
                 <Grid>{createRadio(classes, checkboxes, setCheckbox, Constants.REDIRECTS.idx)}</Grid>
                 <Grid>{createRadio(classes, checkboxes, setCheckbox, Constants.DOWNLOAD.idx)}</Grid>

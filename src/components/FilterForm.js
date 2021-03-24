@@ -17,6 +17,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 
 import 'fontsource-roboto';
 
@@ -29,9 +31,6 @@ import {theme} from './theme';
 import "./styles.css";
 import useStyles from "./styles";
 import StyledTableCell from './StyledTableCell';
-
-
-
 import { getSearchData } from '../processData';
 
 
@@ -140,43 +139,50 @@ export function FilterForm(props) {
                 <React.Fragment>
                     <form onSubmit={(e) => handleDisplay(e)}>
                         <div className={classes.root} >
+                            { useMediaQuery(theme.breakpoints.up('md')) ?
+                                <AppBar>
+                                    <Toolbar className={classes.toolbar}>
+                                        <Grid justify="space-between"
+                                            container>
+                                            <Grid item>
+                                                <Typography
+                                                    variant="h2"
+                                                >Test Profile Download Status
+                                                </Typography>
+                                                {lastDownload ?
+                                                <Typography
+                                                >Last Download: {lastDownload}
+                                                </Typography> : null}
+                                            </Grid>
+                                            <Grid item>
+                                                <PTSHelp/>
+                                            </Grid>
+                                        </Grid>
+                                    </Toolbar>
+                                </AppBar> 
+                            :
                             <AppBar>
-                                <Toolbar className={classes.toolbar}>
-                                    <Grid justify="space-between"
-                                        container>
-                                        <Grid item>
-                                            <Typography
-                                                variant="h2"
-                                            >Test Profile Download Status
-                                            </Typography>
-                                            {lastDownload ?
-                                            <Typography
-                                            >Last Download: {lastDownload}
-                                            </Typography> : null}
-                                        </Grid>
-                                        <Grid item>
-                                            <PTSHelp/>
-                                        </Grid>
-                                    </Grid>
+                                <Toolbar className={classes.toolbar_sm}>
+                                    <Typography>Test Profile Results</Typography>
                                 </Toolbar>
-                            </AppBar>
+                            </AppBar> }
                         </div>
                         {/* <div className={classes.root}> */}
                         <Grid  container>
-                            <Grid style={{marginTop:"4rem"}} item xs={12}>
-                                
+                            <Grid className={classes.toolbar_margins} item xs={12}>                                 
                                 <Grid container item xs={12}>
 
                                     <Checkboxes {...checkboxes} displayLegend={legend} />
 
-                                    <Grid item xs={3}>
+                                    <Grid item xs={12} md={3}>
                                         <TextField
+                                            className={classes.filter_margins}
                                             value={searchValue}
                                             label="Profile Name"
                                             variant="standard"
                                             size="small"
                                             color="primary"
-                                            style={{marginTop:'0.5em'}}
+                                            // style={{marginTop:'0.5em'}}
                                             InputLabelProps={{shrink: true}}
                                             InputProps={{
                                                 startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment>,
@@ -188,7 +194,7 @@ export function FilterForm(props) {
                                             onChange={(e) => setSearchValue(e.target.value)}   
                                         />      
                                     </Grid>
-                                    <Grid item xs={5}>
+                                    <Grid item xs={12} md={5}>
                                         <FormControlLabel
                                                 control={
                                                     <Checkbox

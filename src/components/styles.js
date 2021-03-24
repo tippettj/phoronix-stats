@@ -32,14 +32,33 @@ export const useStyles = makeStyles(() => ({
       background: theme.palette.primary.main,
       padding: '1em',
     },
-
+    toolbar_sm: {
+      background: theme.palette.primary.main,
+    },
+    toolbar_margins: {
+      marginTop:"4em",
+      [theme.breakpoints.down('sm')]: {
+        marginTop: "1em",
+      },
+    },
+    failed_checkbox_margins: {
+      [theme.breakpoints.down('sm')]: {
+        marginLeft: "1.5em",
+      },
+    },
+    filter_margins: {
+      marginTop: "0.5em",
+      [theme.breakpoints.down('sm')]: {
+        margin: "1.5em 0 1.5rem 0em",
+      },
+    },
     // Contains the Legend Details
     paper: {
       padding: theme.spacing(2),
       margin: "1rem 1rem 1rem 0rem",
       textAlign: "left",
       color: theme.palette.text.secondary,
-      height: "240px",
+      height: "80%",
     },
 
     // keep for debugging
