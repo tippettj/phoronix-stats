@@ -224,7 +224,7 @@ export function FilterForm(props) {
                             <Table stickyHeader className={classes.borders}>
                                 <TableHead>
                                     <TableRow className={classes.tableHeader}>
-                                        <StyledTableCell colSpan={3}><Typography className={classes.resultsRow} color='primary'> Results: {results.length}</Typography></StyledTableCell>
+                                        <StyledTableCell colSpan={4}><Typography className={classes.resultsRow} color='primary'> Results: {results.length}</Typography></StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody className={classes.borders}>
