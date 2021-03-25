@@ -1,24 +1,24 @@
 {
   "files": {
     "main.css": "/phoronix-stats/static/css/main.44c7b690.chunk.css",
-    "main.js": "/phoronix-stats/static/js/main.88f738ef.chunk.js",
-    "main.js.map": "/phoronix-stats/static/js/main.88f738ef.chunk.js.map",
+    "main.js": "/phoronix-stats/static/js/main.9e086f9d.chunk.js",
+    "main.js.map": "/phoronix-stats/static/js/main.9e086f9d.chunk.js.map",
     "runtime-main.js": "/phoronix-stats/static/js/runtime-main.9d79299e.js",
     "runtime-main.js.map": "/phoronix-stats/static/js/runtime-main.9d79299e.js.map",
     "static/css/2.d7274675.chunk.css": "/phoronix-stats/static/css/2.d7274675.chunk.css",
-    "static/js/2.fb3f540d.chunk.js": "/phoronix-stats/static/js/2.fb3f540d.chunk.js",
-    "static/js/2.fb3f540d.chunk.js.map": "/phoronix-stats/static/js/2.fb3f540d.chunk.js.map",
+    "static/js/2.be5ba14f.chunk.js": "/phoronix-stats/static/js/2.be5ba14f.chunk.js",
+    "static/js/2.be5ba14f.chunk.js.map": "/phoronix-stats/static/js/2.be5ba14f.chunk.js.map",
     "index.html": "/phoronix-stats/index.html",
     "static/css/2.d7274675.chunk.css.map": "/phoronix-stats/static/css/2.d7274675.chunk.css.map",
     "static/css/main.44c7b690.chunk.css.map": "/phoronix-stats/static/css/main.44c7b690.chunk.css.map",
-    "static/js/2.fb3f540d.chunk.js.LICENSE.txt": "/phoronix-stats/static/js/2.fb3f540d.chunk.js.LICENSE.txt",
+    "static/js/2.be5ba14f.chunk.js.LICENSE.txt": "/phoronix-stats/static/js/2.be5ba14f.chunk.js.LICENSE.txt",
     "static/media/index.css": "/phoronix-stats/static/media/roboto-vietnamese-400-normal.52cebac0.woff2"
   },
   "entrypoints": [
     "static/js/runtime-main.9d79299e.js",
     "static/css/2.d7274675.chunk.css",
-    "static/js/2.fb3f540d.chunk.js",
+    "static/js/2.be5ba14f.chunk.js",
     "static/css/main.44c7b690.chunk.css",
-    "static/js/main.88f738ef.chunk.js"
+    "static/js/main.9e086f9d.chunk.js"
   ]
 }
