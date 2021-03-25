@@ -88,7 +88,7 @@ pushJSON() {
 }
 
 #  Read any arguments
-while getopts 'dhcs:' flag; do
+while getopts 'dhcps:' flag; do
   case "${flag}" in
     d) DEV_MODE="true" ;;
     c) cleanUp ;;
