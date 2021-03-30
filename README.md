@@ -2,8 +2,6 @@
 
 #### Part of [Phoronix Test Suite](https://www.phoronix-test-suite.com/)
 
-[![Build Status](https://github.com/tippettj/phoronix-stats?branch=master)](https://github.com/tippettj/phoronix-stats)
-
 Test Profile Download Status is a tool for displaying the download status of each Test Profile within the Phoronix Test Suite.
 
 ## Features
